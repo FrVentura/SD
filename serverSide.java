@@ -4,17 +4,22 @@ import java.util.*;
 
 class Leilao{
     int numero;
-    int vendedor;
-    int ultLicitador;
+    String vendedor;
+    String ultLicitador;
     int valor;
     String item;
 
-    public Leilao(int num, int ven, int val, String it){
+    public Leilao(int num, String ven, int val, String it){
         numero = num;
         vendedor = ven;
-        ultLicitador = -1;
+        ultLicitador = "none";
         valor = val;
         item = it;
+    }
+
+    public void licitar(String comprador, int incremento){
+        ultLicitador = comprador;
+        valor += incremento;
     }
 
 }
