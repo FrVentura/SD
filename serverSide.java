@@ -25,7 +25,7 @@ class Vendedor{
 
     public Vendedor(String usn, String pwd){
         username = usn;
-        password = pwd
+        password = pwd;
     }
 
     public boolean authenticate(String usn, String pwd){
@@ -39,7 +39,7 @@ class Comprador{
 
     public Comprador(String usn, String pwd){
         username = usn;
-        password = pwd
+        password = pwd;
     }
 
     public boolean authenticate(String usn, String pwd){
@@ -50,23 +50,33 @@ class Comprador{
 
 class Leiloeira{
     ArrayList<Leilao> leiloes;
-    HashSet<Vendedor> vendedores;
-    HashSet<Comprador> compradores;
+    TreeMap<String,String> vendedores;
+    TreeMap<String,String> compradores;
 
     public Leiloeira(){
         leiloes = new ArrayList<>();
-        vendedores = new TreeSet<>();
-        compradores = new TreeSet<>();
+        vendedores = new TreeMap<>();
+        compradores = new TreeMap<>();
     }
 
     public synchronized void addVendedor(String usn, String pwd){
-        Vendedor novo = new Vendedor(usn,pwd);
-        vendedores.add(novo);
+        vendedores.put(usn,pwd);
     }
 
     public synchronized void addComprador(String usn, String pwd){
-        Comprador novo = new Comprador(usn,pwd);
-        compradores.add(novo);
+        compradores.put(usn,pwd);
+    }
+
+    public boolean authenticateVend(String usn, String pwd){
+        if (vendedores.containsKey(usn) && vendedores.get(usn).equals(pwd))
+            return true;
+        return false;
+    }
+
+    public boolean authenticateComp(String usn, String pwd){
+        if (compradores.containsKey(usn) && compradores.get(usn).equals(pwd))
+            return true;
+        return false;
     }
 
 }
@@ -85,8 +95,54 @@ class Handler implements Runnable{
         }
 
         public void run(){
-            //Perguntar ao cliente se quer fazer login como vendedor ou comprador
-            //Fazer coisas diferentes consoante a resposta
+            String curr;
+            String usn;
+            String pwd;
+            int choice;
+            try{
+                out.println("Prima 1 para se registar como novo vendedor");
+                out.println("Prima 2 para se registar como novo comprador");
+                out.println("Prima 3 para fazer login como vendedor");
+                out.println("Prima 4 para fazer login como comprador");
+                out.println("---------------------------------------------");
+                out.println("Digite \"end\" para sair");
+                if ((curr = in.readLine()) == null){
+                    out.println("Adeus");
+                    return;
+                }
+                choice = Integer.parseInt(curr);
+                switch (choice){
+                    case 1:
+                            out.println("Introduza um username");
+                            usn = in.readLine();
+                            out.println("Introduza uma password");
+                            pwd = in.readLine();
+                            if (usn != null && pwd != null){
+                                myLeiloeira.addVendedor(usn,pwd);
+                            }
+                            if (myLeiloeira.authenticateVend(usn,pwd))
+                                out.println("Vendedor Introduzido com sucesso");
+                            break;
+                    case 2:
+                            out.println("Introduza um username");
+                            usn = in.readLine();
+                            out.println("Introduza uma password");
+                            pwd = in.readLine();
+                            if (usn != null && pwd != null){
+                                myLeiloeira.addComprador(usn,pwd);
+                            }
+                            if (myLeiloeira.authenticateComp(usn,pwd))
+                                out.println("Comprador Introduzido com sucesso");
+                            break;
+                    default:
+                            return;
+
+                }
+
+            }
+
+                
+            catch (IOException e){};
         }
 }
 
