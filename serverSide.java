@@ -22,6 +22,14 @@ class Leilao{
         valor += incremento;
     }
 
+    public String getVendedor(){
+        return vendedor;
+    }
+
+    public String getUltLicitador(){
+        return vendedor;
+    }
+
 }
 
 class Vendedor{
@@ -88,17 +96,48 @@ class Leiloeira{
         return true;
     }
 
-
     //O método licitar em Leilao é synchronized, assim várias threads podem licitar leiloes diferentes
     //ao mesmo tempo, mas nunca o mesmo leilao ao mesmo tempo.
     public boolean licitar(int numLeilao, String compradorUsn, int incremento){
         Leilao l;
-        l=leiloes.get(numLeilao)
+        l=leiloes.get(numLeilao);
         if (l != null){
             l.licitar(compradorUsn,incremento);
             return true;
         }
         return false;
+    }
+
+
+    public ArrayList<String> listarLeiloesParaComprador(String usn){
+        Collection<Leilao> myCollection = leiloes.values();
+        ArrayList<String> res = new ArrayList<>();
+        for (Leilao l: myCollection){
+            if ((l.getUltLicitador()).equals(usn)){
+                res.add("+ ");
+                res.add(l.toString());
+            }
+            else{
+                res.add(l.toString());
+            }
+        }
+        return res;
+    }
+
+
+    public ArrayList<String> listarLeiloesParaVendedor(String usn){
+        Collection<Leilao> myCollection = leiloes.values();
+        ArrayList<String> res = new ArrayList<>();
+        for (Leilao l: myCollection){
+            if ((l.getVendedor()).equals(usn)){
+                res.add("* ");
+                res.add(l.toString());
+            }
+            else{
+                res.add(l.toString());
+            }
+        }
+        return res;
     }
 
     public boolean authenticateVend(String usn, String pwd){
@@ -141,6 +180,7 @@ class Handler implements Runnable{
             String usn;
             String pwd;
             int choice;
+            int situation=0; // variavel que define a situacao do utilizador no final do register/login
             try{
                 if( (curr = in.readLine()) != null);
                     choice = Integer.parseInt(curr);
@@ -150,40 +190,54 @@ class Handler implements Runnable{
                             out.println("from server: a registar novo vendedor");
                             usn = in.readLine();
                             pwd = in.readLine();
-                            if (myLeiloeira.addVendedor(usn,pwd) == true)
+                            if (myLeiloeira.addVendedor(usn,pwd) == true){
                                 out.println("from server: Success, username is \""+ usn + "\" password is \""+pwd+"\"");
-                            else
+                                situation = 1;
+                            }
+                            else{
                                 out.println("from server: Fail");
+                                situation = -1;
+                            }
                     case 2:
                             out.println("from server: a registar novo comprador");
                             usn = in.readLine();
                             pwd = in.readLine();
-                            if (myLeiloeira.addComprador(usn,pwd) == true)
+                            if (myLeiloeira.addComprador(usn,pwd) == true){
                                 out.println("from server: Success, username is \""+ usn + "\" password is \""+pwd+"\"");
-                            else
+                                situation = 2;
+                            }
+                            else{
                                 out.println("from server: Fail");
+                                situation = -1;
+                            }
                     case 3:
                             out.println("from server: a fazer login como vendedor");
                             usn = in.readLine();
                             pwd = in.readLine();
-                            if (myLeiloeira.authenticateVend(usn,pwd) == true)
+                            if (myLeiloeira.authenticateVend(usn,pwd) == true){
                                 out.println("from server: bem-vindo");
-                            else
+                                situation = 3;
+                            }
+                            else{
                                 out.println("from server: Fail");
+                                situation = -1;
+                            }
                     case 4:
                             out.println("from server: a fazer login como compradore");
                             usn = in.readLine();
                             pwd = in.readLine();
-                            if (myLeiloeira.authenticateComp(usn,pwd) == true)
+                            if (myLeiloeira.authenticateComp(usn,pwd) == true){
                                 out.println("from server: bem-vindo");
-                            else
+                                situation = 4;
+                            }
+                            else{
                                 out.println("from server: Fail");
+                                situation = -1;
+                            }
                     default:
                         break;
                 }
-            }
-
-                
+            }   
             catch (IOException e){};
         }
 }
