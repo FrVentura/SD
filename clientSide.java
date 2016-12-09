@@ -2,6 +2,26 @@ import java.net.*;
 import java.io.*;
 
 
+class HandlerListener implements Runnable{
+    Socket mySocket;
+    BufferedReader in;
+
+    public HandlerListener(Socket s, BufferedReader br){
+        mySocket = s;
+        in = br;
+    }
+
+    public void run(){
+        while (true){
+            try{
+                System.out.println(in.readLine());
+            }
+            catch (IOException e){};
+        }
+    }
+}
+
+
 public class clientSide{
     public static void main (String args[]) throws IOException, UnknownHostException{
         
@@ -19,6 +39,9 @@ public class clientSide{
         String current;
         int choice;
 
+
+        (new Thread (new HandlerListener(cs,in))).start();
+
         System.out.println("Prima 1 para se registar como novo vendedor");
         System.out.println("Prima 2 para se registar como novo comprador");
         System.out.println("Prima 3 para fazer login como vendedor");
@@ -34,7 +57,7 @@ public class clientSide{
         out.println(choice);
         switch (choice){
                     case 1:
-                            System.out.println(in.readLine());
+                            //System.out.println(in.readLine());
                             System.out.println("Introduza um username");
                             username = sin.readLine();
                             out.println(username);
@@ -42,10 +65,10 @@ public class clientSide{
                             System.out.println("Introduza uma password");
                             password = sin.readLine();
                             out.println(password);
-                            System.out.println(in.readLine());
+                            //System.out.println(in.readLine());
                             break;
                     case 2:
-                            System.out.println(in.readLine());
+                            //System.out.println(in.readLine());
                             System.out.println("Introduza um username");
                             username = sin.readLine();
                             out.println(username);
@@ -54,10 +77,10 @@ public class clientSide{
                             System.out.println("Introduza uma password");
                             password = sin.readLine();
                             out.println(password);
-                            System.out.println(in.readLine());
+                            //System.out.println(in.readLine());
                             break;
                     case 3:
-                            System.out.println(in.readLine());
+                            //System.out.println(in.readLine());
                             System.out.println("Introduza o seu username");
                             username = sin.readLine();
                             out.println(username);
@@ -65,10 +88,10 @@ public class clientSide{
                             System.out.println("Introduza a sua password");
                             password = sin.readLine();
                             out.println(password);
-                            System.out.println(in.readLine());
+                            //System.out.println(in.readLine());
                             break;
                     case 4:
-                            System.out.println(in.readLine());
+                            //System.out.println(in.readLine());
                             System.out.println("Introduza o seu username");
                             username = sin.readLine();
                             out.println(username);
@@ -76,11 +99,13 @@ public class clientSide{
                             System.out.println("Introduza a sua password");
                             password = sin.readLine();
                             out.println(password);
-                            System.out.println(in.readLine());
+                            //System.out.println(in.readLine());
                             break;
                     default:
                             break;
         }
+
+
 
         while((current = sin.readLine()) != null){
             if (current.equals("end")){
