@@ -5,21 +5,21 @@ import java.util.*;
 class Leilao{
     int numero;
     String vendedor;
-    String ultLicitador;
     int valor;
     String item;
+    TreeMap<Integer,String> compradores;
 
     public Leilao(int num, String ven, int val, String it){
         numero = num;
         vendedor = ven;
-        ultLicitador = "none";
         valor = val;
         item = it;
+        compradores = new TreeMap<>();
     }
 
     public synchronized void licitar(String comprador, int incremento){
-        ultLicitador = comprador;
         valor += incremento;
+        compradores.put(valor,comprador);
     }
 
     public String getVendedor(){
@@ -27,46 +27,16 @@ class Leilao{
     }
 
     public String getUltLicitador(){
-        return vendedor;
+        return compradores.get(compradores.lastKey());
     }
 
 }
-
-class Vendedor{
-    String username;
-    String password;
-
-    public Vendedor(String usn, String pwd){
-        username = usn;
-        password = pwd;
-    }
-
-    public boolean authenticate(String usn, String pwd){
-        return (username.equals(usn) && password.equals(pwd));
-    }
-}
-
-class Comprador{
-    String username;
-    String password;
-
-    public Comprador(String usn, String pwd){
-        username = usn;
-        password = pwd;
-    }
-
-    public boolean authenticate(String usn, String pwd){
-        return (username.equals(usn) && password.equals(pwd));
-    }
-}
-
 
 class Leiloeira{
-    int ultLeilao;
-
-    TreeMap<Integer,Leilao> leiloes;
-    TreeMap<String,String> vendedores;
-    TreeMap<String,String> compradores;
+    int ultLeilao; // numero atribuido ao ultimo leilao
+    TreeMap<Integer,Leilao> leiloes; // TreeMap<numLeilao,Leilao>
+    TreeMap<String,String> vendedores; // TreeMap<usn,pwd>
+    TreeMap<String,String> compradores; // TreeMap<usn,pwd>
 
     public Leiloeira(){
         ultLeilao = 0;
