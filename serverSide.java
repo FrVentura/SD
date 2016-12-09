@@ -17,7 +17,7 @@ class Leilao{
         item = it;
     }
 
-    public void licitar(String comprador, int incremento){
+    public synchronized void licitar(String comprador, int incremento){
         ultLicitador = comprador;
         valor += incremento;
     }
@@ -54,15 +54,25 @@ class Comprador{
 
 
 class Leiloeira{
-    ArrayList<Leilao> leiloes;
+    int ultLeilao;
+
+    TreeMap<Integer,Leilao> leiloes;
     TreeMap<String,String> vendedores;
     TreeMap<String,String> compradores;
 
     public Leiloeira(){
-        leiloes = new ArrayList<>();
+        ultLeilao = 0;
+        leiloes = new TreeMap<>();
         vendedores = new TreeMap<>();
         compradores = new TreeMap<>();
     }
+
+    public synchronized int addLeilao(Leilao lei){
+        ultLeilao ++;
+        leiloes.put(ultLeilao,lei);
+        return ultLeilao;
+    }
+
 
     public synchronized boolean addVendedor(String usn, String pwd){
         if (vendedores.containsKey(usn))
@@ -76,6 +86,19 @@ class Leiloeira{
             return false;
         compradores.put(usn,pwd);
         return true;
+    }
+
+
+    //O método licitar em Leilao é synchronized, assim várias threads podem licitar leiloes diferentes
+    //ao mesmo tempo, mas nunca o mesmo leilao ao mesmo tempo.
+    public boolean licitar(int numLeilao, String compradorUsn, int incremento){
+        Leilao l;
+        l=leiloes.get(numLeilao)
+        if (l != null){
+            l.licitar(compradorUsn,incremento);
+            return true;
+        }
+        return false;
     }
 
     public boolean authenticateVend(String usn, String pwd){
