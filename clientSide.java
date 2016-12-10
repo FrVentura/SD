@@ -18,7 +18,7 @@ class HandlerListener implements Runnable{
             try{
                 current = in.readLine();
                 if (current.equals("situation1"))
-                    (new Thread (new Handler1(mySocket,in))).start();
+                    (new Thread (new Handler1(mySocket))).start();
                 else
                     System.out.println(current);
             }
@@ -33,9 +33,9 @@ class Handler1 implements Runnable{
     PrintWriter out;
     BufferedReader sin;
 
-    public Handler1(Socket s, BufferedReader br) throws IOException, UnknownHostException{
+    public Handler1(Socket s) throws IOException, UnknownHostException{
         mySocket = s;
-        in = br;
+        in = new BufferedReader(new InputStreamReader(s.getInputStream()));
         out = new PrintWriter (s.getOutputStream(), true);
         sin = new BufferedReader(new InputStreamReader(System.in));
     }
@@ -44,13 +44,22 @@ class Handler1 implements Runnable{
         String current;
         int choice = 0;
         boolean flag = true;
-        /**
-        **/
-            System.out.println("********* Menu do Vendedor *********");
-            System.out.println("Prima 1 para Listar leiloes");
-            System.out.println("Prima 2 para iniciar novo leilao");
-            System.out.println("Prima 3 para finalizar um leilao");
-            
+
+        System.out.println("********* Menu do Vendedor *********");
+        System.out.println("Prima 1 para Listar leiloes");
+        System.out.println("Prima 2 para iniciar novo leilao");
+        System.out.println("Prima 3 para finalizar um leilao");
+
+        try{
+                current = sin.readLine();
+                choice = Integer.parseInt(current);
+            }
+        catch (IOException e){
+            flag = true;
+        }
+
+
+            /**
             while(flag){
                 try{
                     current = sin.readLine();
@@ -65,6 +74,8 @@ class Handler1 implements Runnable{
                 flag = false;
             }
         }
+            **/
+
     }
 }
 

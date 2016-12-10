@@ -243,18 +243,9 @@ class Handler implements Runnable{
                     default:
                         break;
                 }
+
             }   
             catch (IOException e){};
-
-            System.out.println(situation);
-
-/**
-            try{
-                if (situation == 1)
-                    (new Thread (new Handler1(mySocket,myLeiloeira, usn))).start();
-            }
-            catch (IOException e){};
-            **/
         }
 }
 
