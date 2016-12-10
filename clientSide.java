@@ -12,12 +12,34 @@ class HandlerListener implements Runnable{
     }
 
     public void run(){
+        String current;
         while (true){
             try{
-                System.out.println(in.readLine());
+                current = in.readLine();
+                if (current.equals("situation1"))
+                    (new Thread (new Handler1(mySocket,in))).start();
+                else
+                    System.out.println(current);
             }
             catch (IOException e){};
         }
+    }
+}
+
+class Handler1 implements Runnable{
+    Socket mySocket;
+    BufferedReader in;
+
+    public Handler1(Socket s, BufferedReader br){
+        mySocket = s;
+        in = br;
+    }
+
+    public void run(){
+        System.out.println("********* Menu do Vendedor *********");
+        System.out.println("Prima 1 para Listar leiloes");
+        System.out.println("Prima 2 para iniciar novo leilao");
+        System.out.println("Prima 3 para finalizar um leilao");
     }
 }
 

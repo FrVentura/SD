@@ -132,6 +132,28 @@ class Leiloeira{
 
 }
 
+
+class Handler1 implements Runnable{ // Para lidar com situation = 1
+    Socket mySocket;
+    PrintWriter out;
+    BufferedReader in;
+    Leiloeira myLeiloeira;
+    String vendedor;
+
+    public Handler1(Socket cs, Leiloeira lei, String usn) throws IOException {
+            mySocket = cs;
+            out = new PrintWriter (cs.getOutputStream(), true);
+            in = new BufferedReader(new InputStreamReader(cs.getInputStream()));
+            myLeiloeira = lei;
+            vendedor = usn;
+    }
+
+    public void run(){
+
+    }
+}
+
+
 class Handler implements Runnable{
         Socket mySocket;
         PrintWriter out;
@@ -162,12 +184,14 @@ class Handler implements Runnable{
                             pwd = in.readLine();
                             if (myLeiloeira.addVendedor(usn,pwd) == true){
                                 out.println("from server: Success, username is \""+ usn + "\" password is \""+pwd+"\"");
+                                out.println("situation1");
                                 situation = 1;
                             }
                             else{
                                 out.println("from server: Fail");
                                 situation = -1;
                             }
+                            break;
                     case 2:
                             out.println("from server: a registar novo comprador");
                             usn = in.readLine();
@@ -180,6 +204,7 @@ class Handler implements Runnable{
                                 out.println("from server: Fail");
                                 situation = -1;
                             }
+                            break;
                     case 3:
                             out.println("from server: a fazer login como vendedor");
                             usn = in.readLine();
@@ -192,8 +217,9 @@ class Handler implements Runnable{
                                 out.println("from server: Fail");
                                 situation = -1;
                             }
+                            break;
                     case 4:
-                            out.println("from server: a fazer login como compradore");
+                            out.println("from server: a fazer login como comprador");
                             usn = in.readLine();
                             pwd = in.readLine();
                             if (myLeiloeira.authenticateComp(usn,pwd) == true){
@@ -209,6 +235,7 @@ class Handler implements Runnable{
                 }
             }   
             catch (IOException e){};
+
         }
 }
 
