@@ -149,6 +149,16 @@ class Handler1 implements Runnable{ // Para lidar com situation = 1
     }
 
     public void run(){
+        String curr;
+        int choice = 0;
+        try{
+            if( (curr = in.readLine()) != null);
+                choice = Integer.parseInt(curr);
+            if (choice == 1){
+                out.println("from server: a Listar leiloes");
+            }
+        }
+        catch (IOException e){};
 
     }
 }
@@ -169,7 +179,7 @@ class Handler implements Runnable{
 
         public void run(){
             String curr;
-            String usn;
+            String usn = "none";
             String pwd;
             int choice;
             int situation=0; // variavel que define a situacao do utilizador no final do register/login
@@ -236,6 +246,15 @@ class Handler implements Runnable{
             }   
             catch (IOException e){};
 
+            System.out.println(situation);
+
+/**
+            try{
+                if (situation == 1)
+                    (new Thread (new Handler1(mySocket,myLeiloeira, usn))).start();
+            }
+            catch (IOException e){};
+            **/
         }
 }
 

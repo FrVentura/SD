@@ -6,6 +6,7 @@ class HandlerListener implements Runnable{
     Socket mySocket;
     BufferedReader in;
 
+
     public HandlerListener(Socket s, BufferedReader br){
         mySocket = s;
         in = br;
@@ -29,17 +30,41 @@ class HandlerListener implements Runnable{
 class Handler1 implements Runnable{
     Socket mySocket;
     BufferedReader in;
+    PrintWriter out;
+    BufferedReader sin;
 
-    public Handler1(Socket s, BufferedReader br){
+    public Handler1(Socket s, BufferedReader br) throws IOException, UnknownHostException{
         mySocket = s;
         in = br;
+        out = new PrintWriter (s.getOutputStream(), true);
+        sin = new BufferedReader(new InputStreamReader(System.in));
     }
 
     public void run(){
-        System.out.println("********* Menu do Vendedor *********");
-        System.out.println("Prima 1 para Listar leiloes");
-        System.out.println("Prima 2 para iniciar novo leilao");
-        System.out.println("Prima 3 para finalizar um leilao");
+        String current;
+        int choice = 0;
+        boolean flag = true;
+        /**
+        **/
+            System.out.println("********* Menu do Vendedor *********");
+            System.out.println("Prima 1 para Listar leiloes");
+            System.out.println("Prima 2 para iniciar novo leilao");
+            System.out.println("Prima 3 para finalizar um leilao");
+            
+            while(flag){
+                try{
+                    current = sin.readLine();
+                    choice = Integer.parseInt(current);
+                }
+            catch (IOException e){
+                flag = true;
+            }
+            
+            if (choice == 1 || choice == 2 || choice == 4){
+                out.println(choice);
+                flag = false;
+            }
+        }
     }
 }
 
