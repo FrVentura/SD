@@ -53,28 +53,19 @@ class Handler1 implements Runnable{
         try{
                 current = sin.readLine();
                 choice = Integer.parseInt(current);
-            }
-        catch (IOException e){
-            flag = true;
-        }
-
-
-            /**
-            while(flag){
-                try{
+                System.out.println("choice "+current );
+                if (choice == 2){
+                    System.out.println("Introduza o item que pretende leiloar");
                     current = sin.readLine();
-                    choice = Integer.parseInt(current);
+                    out.println(current);
+                    System.out.println("Introduza o valor de partida");
+                    current = sin.readLine();
+                    out.println(current);
+
                 }
-            catch (IOException e){
-                flag = true;
             }
-            
-            if (choice == 1 || choice == 2 || choice == 4){
-                out.println(choice);
-                flag = false;
-            }
-        }
-            **/
+        catch (IOException e){}
+
 
     }
 }
@@ -163,22 +154,10 @@ public class clientSide{
                             break;
         }
 
-
-
-        while((current = sin.readLine()) != null){
-            if (current.equals("end")){
-                cs.shutdownOutput();
-                break;
-            }
-
-            out.println(current);
-            System.out.println("got: " + in.readLine());
-        }
-        System.out.println("got: " + in.readLine());
-        in.close();
-        sin.close();
-        out.close();
-        cs.close();
+        //in.close();
+        //sin.close();
+        //out.close();
+        //cs.close();
         
     }
 }

@@ -9,8 +9,7 @@ class Leilao{
     String item;
     TreeMap<Integer,String> compradores;
 
-    public Leilao(int num, String ven, int val, String it){
-        numero = num;
+    public Leilao(String ven, int val, String it){
         vendedor = ven;
         valor = val;
         item = it;
@@ -45,7 +44,8 @@ class Leiloeira{
         compradores = new TreeMap<>();
     }
 
-    public synchronized int addLeilao(Leilao lei){
+    public synchronized int addLeilao(String ven, int val, String it){
+        Leilao lei = new Leilao(ven,val,it);
         ultLeilao ++;
         leiloes.put(ultLeilao,lei);
         return ultLeilao;
@@ -132,7 +132,7 @@ class Leiloeira{
 
 }
 
-
+/*
 class Handler1 implements Runnable{ // Para lidar com situation = 1
     Socket mySocket;
     PrintWriter out;
@@ -162,6 +162,7 @@ class Handler1 implements Runnable{ // Para lidar com situation = 1
 
     }
 }
+*/
 
 
 class Handler implements Runnable{
@@ -244,9 +245,33 @@ class Handler implements Runnable{
                         break;
                 }
 
-            }   
+                if (situation==1 || situation==3){
+                    String item;
+                    int valor;
+                    int numL = -1;
+
+                    if( (curr = in.readLine()) != null);
+                        choice = Integer.parseInt(curr);
+                    if (choice == 1)
+                        out.println("from server: a Listar leiloes");
+                    else if (choice == 2){
+                        out.println("from server: iniciar novo leilao");
+                        item = in.readLine();
+                        System.out.println(item);
+
+                        valor = Integer.parseInt(in.readLine());
+                        System.out.println(valor);
+                        numL=myLeiloeira.addLeilao(usn,valor,item);
+                        out.println("from server: Leilao com numero "+numL+" iniciado com sucesso");
+                    }
+                    else if (choice == 3)
+                        out.println("from server: finalizar leilao");
+                }
+            }
+
             catch (IOException e){};
         }
+        
 }
 
 public class serverSide{
