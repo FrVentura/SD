@@ -16,7 +16,7 @@ public class Leilao {
 
 	private String item; // Descrição do que está a ser leiloado
 	private Vendedor vendedor; // Vendedor que criou o Leilão
-	private Double preco; // Preço inicial ou maior licitação 
+	private double preco; // Preço inicial ou maior licitação 
 	private TreeSet<Comprador> listaLances; // Compradores que licitaram o item
 	private Comprador compradorMaiorLance; // Comprador que detem a maior licitação
 
@@ -30,7 +30,7 @@ public class Leilao {
 
 	// Métodos
 
-	public Leilao (String item, Vendedor vendedor, Double preco){
+	public Leilao (String item, Vendedor vendedor, double preco){
 		this.item = item;
 		this.vendedor = vendedor;
 		this.preco = preco;
@@ -38,7 +38,7 @@ public class Leilao {
                 
 	}
 
-	public synchronized boolean licitar(Comprador c, Double valor){
+	public synchronized boolean licitar(Comprador c, double valor){
 		if (valor <= preco) return false;
 
 		this.compradorMaiorLance = c;
