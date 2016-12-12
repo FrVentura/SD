@@ -5,6 +5,8 @@
  */
 package leiloes_server;
 
+import java.util.TreeSet;
+
 /**
  *
  * @author jreis
@@ -28,7 +30,7 @@ public class Leilao {
 
 	// Métodos
 
-	public Leilão (String item, Vendedor vendedor, Double preco){
+	public Leilao (String item, Vendedor vendedor, Double preco){
 		this.item = item;
 		this.vendedor = vendedor;
 		this.preco = preco;
