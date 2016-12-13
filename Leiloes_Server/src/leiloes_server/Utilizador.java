@@ -10,8 +10,24 @@ package leiloes_server;
  * @author FrVentura
  */
 public abstract class Utilizador {
-
-    public abstract String getUsername();
     
-    public abstract String getPassword();
+    String username;
+    String password;
+
+    public Utilizador(String usn, String pwd){
+        username = usn;
+        password = pwd;
+    }
+    
+    public String getUsername(){
+        return username;
+    }
+    
+    public String getPassword(){
+        return password;
+    }
+    
+    public boolean authenticate(String usn, String pwd){
+        return (usn.equals(username) && pwd.equals(password));
+    }
 }

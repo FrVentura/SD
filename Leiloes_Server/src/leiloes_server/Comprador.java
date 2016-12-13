@@ -10,27 +10,9 @@ package leiloes_server;
  * @author FrVentura
  */
 public class Comprador extends Utilizador{
-    
-    private String username;
-    private String password;
-    
-    @Override
-    public String getUsername(){
-        return username;
-    }
-    
-    @Override
-    public String getPassword(){
-        return password;
-    }
-    
+
     public Comprador(String usn, String pwd){
-        username = usn;
-        password = pwd;
-    }
-    
-    public boolean authenticate(String usn, String pwd){
-        return (username.equals(usn) && password.equals(pwd));
+        super(usn,pwd);
     }
     
 }

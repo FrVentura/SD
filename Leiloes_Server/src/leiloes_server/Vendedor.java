@@ -14,22 +14,9 @@ public class Vendedor extends Utilizador{
     private String username;
     private String password;
     
-    @Override
-    public String getUsername(){
-        return username;
-    }
-    
-    @Override
-    public String getPassword(){
-        return password;
-    }
     
     public Vendedor(String usn, String pwd){
-        username = usn;
-        password = pwd;
+        super(usn,pwd);
     }
     
-    public boolean authenticate(String usn, String pwd){
-        return (username.equals(usn) && password.equals(pwd));
-    }
 }
