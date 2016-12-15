@@ -21,7 +21,7 @@ public class Leilao {
     private Comprador compradorMaiorLance; // Comprador que detem a maior licitação
 
     // Getters
-
+    
     public String getItem() {return this.item;}
     public Vendedor getVendedor() {return this.vendedor;}
     public Double getPreco() {return this.preco;}
@@ -58,6 +58,25 @@ public class Leilao {
             return true;
     }
 
+    @Override
+    public String toString(){
+        StringBuilder s = new StringBuilder();
+        s.append("item: ");
+        s.append(this.item);
+        s.append("\n");
+        s.append("Vendedor: ");
+        s.append(this.vendedor.getUsername());
+        s.append("\n");
+        s.append("Maior Licitação: ");
+        s.append(this.preco);
+        if (compradorMaiorLance != null){
+            s.append("Comprador com maior lance: ");
+            s.append(compradorMaiorLance.getUsername());
+        }
+        s.append("\n");
+        return s.toString();
+    }
+    
     @Override
     public Leilao clone(){
         return new Leilao(this);
