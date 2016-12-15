@@ -19,4 +19,12 @@ public class Vendedor extends Utilizador{
         super(usn,pwd);
     }
     
+    public Vendedor(Vendedor v){
+        super(v.getUsername(),v.getPassword());
+    }
+    
+    @Override
+    public Vendedor clone(){
+        return new Vendedor(this);
+    }
 }

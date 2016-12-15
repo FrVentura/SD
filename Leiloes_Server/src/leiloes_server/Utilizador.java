@@ -19,6 +19,11 @@ public abstract class Utilizador {
         password = pwd;
     }
     
+    public Utilizador(Utilizador u){
+        username = u.getUsername();
+        password = u.getPassword();
+    }
+    
     public String getUsername(){
         return username;
     }
@@ -30,4 +35,6 @@ public abstract class Utilizador {
     public boolean authenticate(String usn, String pwd){
         return (usn.equals(username) && pwd.equals(password));
     }
+    
+
 }

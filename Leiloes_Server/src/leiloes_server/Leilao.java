@@ -31,12 +31,23 @@ public class Leilao {
 	// Métodos
 
 	public Leilao (String item, Vendedor vendedor, double preco){
-		this.item = item;
-		this.vendedor = vendedor;
-		this.preco = preco;
-                listaLances = new TreeSet<>();
+            this.item = item;
+            this.vendedor = vendedor;
+            this.preco = preco;
+            listaLances = new TreeSet<>();
                 
 	}
+        
+        public Leilao (Leilao l){
+            this.item = l.getItem();
+            this.vendedor = l.getVendedor().clone();
+            this.preco = l.getPreco();
+            TreeSet<Comprador> ll = new TreeSet<>();
+            for (Comprador c : l.getListaLances()){
+                ll.add(c.clone());
+            }
+            this.listaLances = ll;
+        }
 
 	public synchronized boolean licitar(Comprador c, double valor){
 		if (valor <= preco) return false;
@@ -46,5 +57,10 @@ public class Leilao {
 		listaLances.add(c);
 		return true;
 	}
+        
+        @Override
+        public Leilao clone(){
+            return new Leilao(this);
+        }
 
 }

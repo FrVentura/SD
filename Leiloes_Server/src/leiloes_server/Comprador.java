@@ -15,4 +15,13 @@ public class Comprador extends Utilizador{
         super(usn,pwd);
     }
     
+    public Comprador(Comprador c){
+        super(c.getUsername(),c.getPassword());
+    }
+    
+    @Override
+    public Comprador clone(){
+        return new Comprador(this);
+    }
+
 }
