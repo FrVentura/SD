@@ -36,17 +36,7 @@ public class Leiloeira {
      */
     public Leiloeira(Leiloeira leil){  // deep copy
         this.incrementador = leil.getIncrementador();
-	this.utilizadores = new TreeMap<>();
-        Utilizador u;
-        for(String usn : leil.getUtilizadoresShallow().keySet()){
-            u = leil.getUtilizadoresShallow().get(usn);
-            if (u instanceof Vendedor){
-                this.utilizadores.put(usn,((Vendedor) u).clone());
-            }
-            else{
-                this.utilizadores.put(usn,((Comprador) u).clone());
-            }
-        }
+	this.utilizadores = leil.getUtilizadoresDeep();
 	this.ativos = leil.getAtivosDeep(); 
         this.historico = leil.getHistoricoDeep();
     }
@@ -60,13 +50,36 @@ public class Leiloeira {
     public TreeMap<String,Utilizador> getUtilizadoresShallow(){
         return this.utilizadores;
     }
-	
+    
+    public TreeMap<String,Utilizador> getUtilizadoresDeep(){
+        Utilizador u;
+        TreeMap <String,Utilizador> ret = new TreeMap<>();
+        for(String usn : utilizadores.keySet()){
+            u = utilizadores.get(usn);
+            if (u instanceof Vendedor){
+                ret.put(usn,((Vendedor) u).clone());
+            }
+            else{
+                ret.put(usn,((Comprador) u).clone());
+            }
+        }
+        return ret;
+    }
+    
+    public TreeMap<Integer,Leilao> getAtivosShallow(){
+        return ativos;
+    }
+ 
     public TreeMap<Integer,Leilao> getAtivosDeep(){
         TreeMap<Integer,Leilao> ret = new TreeMap<>();
         for (Map.Entry<Integer,Leilao> entry : ativos.entrySet()){
             ret.put(entry.getKey(), entry.getValue().clone());
         }
         return ret;
+    }
+    
+    public TreeMap<Integer,Leilao> getHistoricoShallow(){
+        return historico;
     }
     
     public TreeMap<Integer,Leilao> getHistoricoDeep(){
