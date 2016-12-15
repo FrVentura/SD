@@ -10,7 +10,7 @@ import java.util.TreeMap;
 
 /**
  *
- * @author FrVentura
+ * @author Renato
  */
 public class Leiloeira {
 
@@ -19,7 +19,9 @@ public class Leiloeira {
     private TreeMap<Integer,Leilao> historico; // tem todos os Leilões que já acabaram
     private TreeMap<String,Utilizador> utilizadores; // A string é o usn do utilizador.
 
-	// Construtores
+	
+
+        // Construtores
     public Leiloeira(){
         this.incrementador = 0;
 	this.ativos = new TreeMap<> ();
@@ -27,12 +29,17 @@ public class Leiloeira {
 	this.utilizadores = new TreeMap<> ();
     }
 
-    public Leiloeira(Leiloeira leil){
+    /**
+     *
+     * @param leil
+     * Construtor copia : Devolve 'deep copy' de 
+     */
+    public Leiloeira(Leiloeira leil){  // deep copy
         this.incrementador = leil.getIncrementador();
 	this.utilizadores = new TreeMap<>();
         Utilizador u;
         for(String usn : leil.getUtilizadoresShallow().keySet()){
-            u = leil.getUtilizadorShallow(usn);
+            u = leil.getUtilizadoresShallow().get(usn);
             if (u instanceof Vendedor){
                 this.utilizadores.put(usn,((Vendedor) u).clone());
             }
@@ -49,22 +56,10 @@ public class Leiloeira {
     public int getIncrementador(){
 	return this.incrementador;
     }
-
     
     public TreeMap<String,Utilizador> getUtilizadoresShallow(){
         return this.utilizadores;
     }
-
-    public Utilizador getUtilizadorShallow(String usn){
-        return this.utilizadores.get(usn);
-    }
-
-	
-    public Leilao getLeilaoHistoricoShallow(Integer n){ 
-	return this.historico.get(n); 
-    }
-	
-
 	
     public TreeMap<Integer,Leilao> getAtivosDeep(){
         TreeMap<Integer,Leilao> ret = new TreeMap<>();
@@ -73,6 +68,7 @@ public class Leiloeira {
         }
         return ret;
     }
+    
     public TreeMap<Integer,Leilao> getHistoricoDeep(){
         TreeMap<Integer,Leilao> ret = new TreeMap<>();
         for (Map.Entry<Integer,Leilao> entry : historico.entrySet()){
@@ -80,8 +76,6 @@ public class Leiloeira {
         }
         return ret;
     }
-
-
 
     public synchronized int addLeilao(String item , Vendedor v , Double p){
 	this.incrementador ++;
@@ -91,7 +85,7 @@ public class Leiloeira {
 
 
     public synchronized boolean addUtilizador(Utilizador u){
-        if(this.utilizadores.containsKey(u.getUsername()))
+        if(utilizadores.containsKey(u.getUsername()))
             return false;
 	else{
             this.utilizadores.put(u.getUsername(),u);
@@ -101,96 +95,48 @@ public class Leiloeira {
     
 	// Modo 1 -> Vendedor
 	// Modo 2 -> Comprador
-	public boolean authenticate(String usn , String pw ,int modo)    
-	{
-
-		if (this.utilizadores.containsKey(usn)) 
-		{
-			switch(modo){
-
-				case 1: if(this.utilizadores.get(usn).getClass() == Vendedor.class && (this.utilizadores.get(usn).getPwd().equals(pw))) return true;
-					break;
-				}
-				case 2: if(this.utilizador.get(usn).getClass() == Comprador.class && (this.utilizador.get(usn).getPwd().equals(pw))) return true; 
-					default: return false;
-
-
-			}
-
-
-
-		
-		 return false;
-		 } 	
-
-	
-
-	public Licitar (Integer idLeil, String usn, double valor)
-	{
-
-		
-
-
-
-	}
-
-
-
-	
-	public String ListarLeiloes(String usn)
-	{
-
-
-
-	}
-	
-
-
-
-
-
-	public boolean fecharLeilao(Integer idLeil, String usn)
-	{
-
-		Leilao l;
-
-
-			synchronized(this.ativos){
-
-				if(this.ativos.containsKey(idLeil)){
-					l = this.ativos.get(idLeil);
-							
-							if(this.ativos.getVendedor().getUsername().equals(usn))
-								this.ativos.remove(idLeil);
-							else return false;
-
-				}else return false;
-			}
-			
-
-
-			synchronized(this.historico){
-				this.historico.put(idLeil,l);	
-			}
-					
-
-			return true;
+    public boolean authenticate(String usn , String pw ,int modo){
+        boolean ret = false;
+	if (this.utilizadores.containsKey(usn)){
+            switch(modo){
+                case 1: if((utilizadores.get(usn)) instanceof Vendedor && ((utilizadores.get(usn)).getPassword().equals(pw)))
+                            ret = true;
+                    break;
 				
+		case 2: if((utilizadores.get(usn)) instanceof Comprador && ((utilizadores.get(usn)).getPassword().equals(pw)))
+                            ret = true;
+                    break;
+                    
+		default:
+                    break;
+            }
+        }
+        return ret;
+    } 	
 
+	
 
-			 
-			
-
-
+    //public Licitar (Integer idLeil, String usn, double valor){}
+	
+    //public String ListarLeiloes(String usn){}
+	
+    public boolean fecharLeilao(Integer idLeil, String usn){
+        Leilao l;
+        synchronized(ativos){
+            if(ativos.containsKey(idLeil)){
+                l = ativos.get(idLeil);
+                if(l.getVendedor().getUsername().equals(usn))
+                    ativos.remove(idLeil);
+                else
+                    return false;
+            }
+            else
+                return false;
 	}
-
-
-
-
-
-
-
-
-
+	synchronized(historico){
+            historico.put(idLeil,l);	
+	}
+	return true;
+    }
 
 }

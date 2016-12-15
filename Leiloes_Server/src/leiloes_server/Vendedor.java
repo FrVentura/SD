@@ -11,16 +11,23 @@ package leiloes_server;
  */
 public class Vendedor extends Utilizador{
     
-    private String username;
-    private String password;
-    
-    
     public Vendedor(String usn, String pwd){
         super(usn,pwd);
     }
     
     public Vendedor(Vendedor v){
         super(v.getUsername(),v.getPassword());
+    }
+    
+    @Override
+    public boolean equals(Object o){
+        if(o == this)
+            return true;
+        if(o == null || o.getClass() != this.getClass())
+            return false;
+        Vendedor v = (Vendedor) o;
+        return this.username.equals(v.getUsername()) &&
+               this.password.equals(v.getPassword());
     }
     
     @Override

@@ -32,6 +32,17 @@ public abstract class Utilizador {
         return password;
     }
     
+    public abstract boolean equals(Object o);
+    
+    @Override
+    public String toString(){
+        StringBuilder s = new StringBuilder();
+        s.append(this.username);
+        s.append(" ");
+        s.append(this.password);
+        return s.toString();
+    }
+    
     public boolean authenticate(String usn, String pwd){
         return (usn.equals(username) && pwd.equals(password));
     }
