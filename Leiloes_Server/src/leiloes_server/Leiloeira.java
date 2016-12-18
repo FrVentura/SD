@@ -100,7 +100,7 @@ public class Leiloeira {
     }
 
     
-    public int addLeilao(String item , Vendedor v , Double p){
+    public int addLeilao(String item , Vendedor v , double p){
         int aux;
         locker.writeLockInc();
         incrementador++;

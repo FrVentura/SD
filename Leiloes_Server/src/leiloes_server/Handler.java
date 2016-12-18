@@ -33,18 +33,21 @@ public class Handler implements Runnable {
         String curr;
         String usn = "none";
         String pwd;
+        Vendedor vend = null;
+        Comprador comp = null;
         int choice;
         int situation=0; // variavel que define a situacao do utilizador no final do register/login
         try{
             if( (curr = in.readLine()) != null);
                 choice = Integer.parseInt(curr);
+                
 
             switch (choice){
                 case 1:
                         out.println("from server: a registar novo vendedor");
                         usn = in.readLine();
                         pwd = in.readLine();
-                        Vendedor vend = new Vendedor(usn,pwd);
+                        vend = new Vendedor(usn,pwd);
                         if (myLeiloeira.addUtilizador(vend) == true){
                             out.println("from server: Success, username is \""+ usn + "\" password is \""+pwd+"\"");
                             out.println("situation1");
@@ -59,7 +62,7 @@ public class Handler implements Runnable {
                         out.println("from server: a registar novo comprador");
                         usn = in.readLine();
                         pwd = in.readLine();
-                        Comprador comp = new Comprador(usn,pwd);
+                        comp = new Comprador(usn,pwd);
                         if (myLeiloeira.addUtilizador(comp) == true){
                             out.println("from server: Success, username is \""+ usn + "\" password is \""+pwd+"\"");
                             situation = 2;
@@ -73,7 +76,7 @@ public class Handler implements Runnable {
                         out.println("from server: a fazer login como vendedor");
                         usn = in.readLine();
                         pwd = in.readLine();
-                        if (myLeiloeira.authenticateVend(usn,pwd) == true){
+                        if (myLeiloeira.authenticate(usn,pwd,1) == true){
                             out.println("from server: bem-vindo");
                             situation = 3;
                         }
@@ -86,7 +89,7 @@ public class Handler implements Runnable {
                         out.println("from server: a fazer login como comprador");
                         usn = in.readLine();
                         pwd = in.readLine();
-                        if (myLeiloeira.authenticateComp(usn,pwd) == true){
+                        if (myLeiloeira.authenticate(usn,pwd,2) == true){
                             out.println("from server: bem-vindo");
                             situation = 4;
                         }
@@ -114,7 +117,7 @@ public class Handler implements Runnable {
 
                     valor = Integer.parseInt(in.readLine());
                     System.out.println(valor);
-                    numL=myLeiloeira.addLeilao(usn,valor,item);
+                    numL=myLeiloeira.addLeilao(item,vend,valor);
                     out.println("from server: Leilao com numero "+numL+" iniciado com sucesso");
                 }
                 else if (choice == 3)
