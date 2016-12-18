@@ -235,6 +235,4 @@ public class Leiloeira {
         
 	return true;
     }
-
-
 }
