@@ -77,6 +77,52 @@ public class Leilao {
         return s.toString();
     }
     
+    public String toStringV(String usn){
+        if (vendedor.getUsername().equals(usn)){
+            StringBuilder s = new StringBuilder();
+            s.append("*\n");
+            s.append("item: ");
+            s.append(this.item);
+            s.append("\n");
+            s.append("Vendedor: ");
+            s.append(this.vendedor.getUsername());
+            s.append("\n");
+            s.append("Maior Licitação: ");
+            s.append(this.preco);
+            if (compradorMaiorLance != null){
+                s.append("Comprador com maior lance: ");
+                s.append(compradorMaiorLance.getUsername());
+            }
+            s.append("\n");
+            return s.toString();
+        }
+        else
+            return this.toString();
+    }
+    
+        public String toStringC(String usn){
+        if (compradorMaiorLance.getUsername().equals(usn)){
+            StringBuilder s = new StringBuilder();
+            s.append("+\n");
+            s.append("item: ");
+            s.append(this.item);
+            s.append("\n");
+            s.append("Vendedor: ");
+            s.append(this.vendedor.getUsername());
+            s.append("\n");
+            s.append("Maior Licitação: ");
+            s.append(this.preco);
+            if (compradorMaiorLance != null){
+                s.append("Comprador com maior lance: ");
+                s.append(compradorMaiorLance.getUsername());
+            }
+            s.append("\n");
+            return s.toString();
+        }
+        else
+            return this.toString();
+    }
+    
     @Override
     public Leilao clone(){
         return new Leilao(this);
