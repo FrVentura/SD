@@ -34,7 +34,6 @@ public class Locker {
     private int numReHis;
     private int numWrHis;
     int wantWriteHis;
-    public final Condition addedNewHistorico;
     
     private final Lock lUti;
     private final Condition okToReadUti;
@@ -43,12 +42,12 @@ public class Locker {
     private int numWrUti;
     int wantWriteUti;
         
-    private final Lock lUlF;
-    private final Condition okToReadUlF;
-    private final Condition okToWriteUlF;
-    private int numReUlF;
-    private int numWrUlF;
-    int wantWriteUlF;
+    private final Lock laAv;
+    private final Condition okToReadaAv;
+    private final Condition okToWriteaAv;
+    private int numReaAv;
+    private int numWraAv;
+    int wantWriteaAv;
     
     
     public Locker(){
@@ -73,7 +72,6 @@ public class Locker {
         numReHis = 0;
         numWrHis = 0;
         wantWriteInc = 0;
-        addedNewHistorico = lHis.newCondition();
 
         
         lUti = new ReentrantLock();
@@ -84,18 +82,18 @@ public class Locker {
         wantWriteUti = 0;
         
         
-        lUlF = new ReentrantLock();
-        okToReadUlF = lUlF.newCondition();
-        okToWriteUlF = lUlF.newCondition();
-        numReUlF = 0;
-        numWrUlF = 0;
-        wantWriteUlF = 0;
+        laAv = new ReentrantLock();
+        okToReadaAv = laAv.newCondition();
+        okToWriteaAv = laAv.newCondition();
+        numReaAv = 0;
+        numWraAv = 0;
+        wantWriteaAv = 0;
 
     }
     
      public void readLockInc(){
         lInc.lock();
-        while (numReInc > 0 || numWrInc > 0){
+        while (numWrInc > 0){
             try{
                 okToReadInc.await();
             }
@@ -108,7 +106,7 @@ public class Locker {
      
      public void readLockAti(){
         lAti.lock();
-        while (numReAti > 0 || numWrAti > 0){
+        while (numWrAti > 0){
             try{
                 okToReadAti.await();
             }
@@ -116,12 +114,12 @@ public class Locker {
         }
         numReAti++;
         okToReadAti.signalAll();
-        lInc.unlock();
+        lAti.unlock();
     }
      
      public void readLockHis(){
         lHis.lock();
-        while (numReHis > 0 || numWrHis > 0){
+        while (numWrHis > 0){
             try{
                 okToReadHis.await();
             }
@@ -134,7 +132,7 @@ public class Locker {
 
     public void readLockUti(){
         lUti.lock();
-        while (numReUti > 0 || numWrUti > 0){
+        while (numWrUti > 0){
             try{
                 okToReadUti.await();
             }
@@ -145,17 +143,17 @@ public class Locker {
         lUti.unlock();
     }
     
-    public void readLockUlF(){
-        lUlF.lock();
-        while (numReUlF > 0 || numWrUlF > 0){
+    public void readLockaAv(){
+        laAv.lock();
+        while (numWraAv > 0){
             try{
-                okToReadUlF.await();
+                okToReadaAv.await();
             }
             catch (InterruptedException e){};
         }
-        numReUlF++;
-        okToReadUlF.signalAll();
-        lUlF.unlock();
+        numReaAv++;
+        okToReadaAv.signalAll();
+        laAv.unlock();
     }
 
     public void readUnlockInc(){
@@ -186,11 +184,11 @@ public class Locker {
             okToWriteUti.signalAll();
     }
     
-    public void readUnlockUlF(){
-        lUlF.lock();
-        numReUlF--;
-        if (numReUlF==0)
-            okToWriteUlF.signalAll();
+    public void readUnlockaAv(){
+        laAv.lock();
+        numReaAv--;
+        if (numReaAv==0)
+            okToWriteaAv.signalAll();
     }
     
     public void writeLockInc(){
@@ -250,18 +248,18 @@ public class Locker {
         lUti.unlock();
     }
     
-    public void writeLockUlF(){
-        lUlF.lock();
-        wantWriteUlF++;
-        while (numWrUlF > 0 || numReUlF > 0){
+    public void writeLockaAv(){
+        laAv.lock();
+        wantWriteaAv++;
+        while (numWraAv > 0 || numReaAv > 0){
             try{
-                okToWriteUlF.await();
+                okToWriteaAv.await();
             }
             catch (InterruptedException e){};
         }
-        wantWriteUlF--;
-        numWrUlF++;
-        lUlF.unlock();
+        wantWriteaAv--;
+        numWraAv++;
+        laAv.unlock();
     }
     
     public void writeUnlockInc(){
@@ -298,15 +296,15 @@ public class Locker {
         lUti.unlock();
     }
     
-    public void writeUnlockUlF(){
-        lUlF.lock();
-        numWrUlF--;
-        okToReadUlF.signalAll();
-        okToWriteUlF.signalAll();
-        lUlF.unlock();
+    public void writeUnlockaAv(){
+        laAv.lock();
+        numWraAv--;
+        okToReadaAv.signalAll();
+        okToWriteaAv.signalAll();
+        laAv.unlock();
     }
     
-    public int getNumReUlF(){
-        return numReUlF;
+    public int getNumReaAv(){
+        return numReaAv;
     }
 }

@@ -28,16 +28,19 @@ public class HandlerAssynchronous implements Runnable {
         myLeiloeira = lei;
         username = usn;
     }
+                // A RESOLVER PELO RENATO -> AVISAR COMPRADORES QUE LICITARAM (dizer qual o idLeilao)
+                //                          -> AVISAR VENCEDOR DO LEILAO (dizer qual o idLeilao)
     
-        public void run(){
+        public void run(){/*
             try {
                 boolean bool=false;
                 while(bool==false){
                     bool = myLeiloeira.esperarPorHistorico(username);
                 }
-
+                
             } catch (InterruptedException ex) {
                 Logger.getLogger(HandlerAssynchronous.class.getName()).log(Level.SEVERE, null, ex);
             }
+            */
         }
 }

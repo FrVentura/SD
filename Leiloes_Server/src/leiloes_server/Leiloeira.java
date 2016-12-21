@@ -24,6 +24,7 @@ public class Leiloeira {
     private TreeMap<Integer,Leilao> ativos; // 
     private TreeMap<Integer,Leilao> historico; // tem todos os Leilões que já acabaram
     private TreeMap<String,Utilizador> utilizadores; // A string é o usn do utilizador.
+    private ArrayList<InfoLeilaoFinalizado> aAvisar;
     private Locker locker;
     private int ultFechado;
 
@@ -238,19 +239,13 @@ public class Leiloeira {
         }
         
         locker.writeLockHis();
-        locker.writeLockUlF();
+        locker.writeLockaAv();
+        
         historico.put(idLeil,l);
-        ultFechado = idLeil;
+        aAvisar.add(new InfoLeilaoFinalizado(idLeil,l));
         
-        locker.writeUnlockUlF();
-        
-        locker.addedNewHistorico.signalAll();
-        
-            locker.writeLockUlF();
-            locker.writeUnlockUlF();
-        //while (locker.getNumReUlF() > 0);
-        
-        locker.writeUnlockUlF();
+
+        locker.writeUnlockaAv();
 	locker.writeUnlockHis();
         
 	return true;
@@ -258,6 +253,7 @@ public class Leiloeira {
     
     public boolean esperarPorHistorico(String usn) throws InterruptedException{
         
+        /*                          A RESOLVER PELO RENATO
         locker.addedNewHistorico.await();
         locker.readLockHis();
         locker.readLockUlF();
@@ -271,6 +267,7 @@ public class Leiloeira {
                 return true;
             }
         }
+        */
         return false;
     }
 }
