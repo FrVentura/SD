@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
 
 /**
  *
@@ -35,11 +36,13 @@ public class Handler implements Runnable {
         String pwd;
         Vendedor vend = null;
         Comprador comp = null;
-        int choice;
+        int choice=0;  
         int situation=0; // variavel que define a situacao do utilizador no final do register/login
         try{
-            if( (curr = in.readLine()) != null);
-                choice = Integer.parseInt(curr);
+            while (choice<1 || choice>4){
+                if( (curr = in.readLine()) != null);
+                    choice = Integer.parseInt(curr);
+            }
                 
 
             switch (choice){
@@ -104,28 +107,53 @@ public class Handler implements Runnable {
                 default:
                     break;
             }
-
+            
+            
+            // declaracao de variaveis auxiliares
+            choice = -1;
+            int idLeilao = -1;
+            double preco = -1;
+            String item;
+                    
             if (situation==1 || situation==3){
-                String item;
-                int valor;
-                int numL = -1;
 
                 if( (curr = in.readLine()) != null);
                     choice = Integer.parseInt(curr);
-                if (choice == 1)
-                    out.println("from server: a Listar leiloes");
-                else if (choice == 2){
-                    out.println("from server: iniciar novo leilao");
-                    item = in.readLine();
-                    System.out.println(item);
+                    
+                switch (choice){
+                    case 1:
+                        ArrayList<String> listaLeiloes = new ArrayList<>();
+                        listaLeiloes = myLeiloeira.ListarLeiloes(usn);
+                        out.println("from server: a Listar leiloes\n");
+                        for (String s : listaLeiloes){
+                            out.println(s);
+                        }
+                        break;
+                        
+                    case 2:
+                        if((curr = in.readLine()) != null);
+                            item = curr;
+                        if((curr = in.readLine()) != null);
+                            preco = Double.parseDouble(curr);
+                        idLeilao = myLeiloeira.addLeilao(item, usn, preco);
+                        out.println("from server: criado leilao com o id: "+idLeilao);
+                        break;
 
-                    valor = Integer.parseInt(in.readLine());
-                    System.out.println(valor);
-                    numL=myLeiloeira.addLeilao(item,vend,valor);
-                    out.println("from server: Leilao com numero "+numL+" iniciado com sucesso");
-                }
-                else if (choice == 3)
-                    out.println("from server: finalizar leilao");
+                    case 3:
+                        out.println("from server: a finalizar leilao: ");
+                        if((curr = in.readLine()) != null);
+                            idLeilao = Integer.parseInt(curr);
+                        if (myLeiloeira.fecharLeilao(idLeilao, usn)){
+                            out.println("sucesso, leilao finalizado");
+                        }
+                        break;
+                    default:
+                        break;
+                }    
+
+            }
+            else if (situation == 2 || situation ==4){
+            
             }
         }
 
