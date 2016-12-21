@@ -109,15 +109,27 @@ public class Leiloeira {
     }
 
     
-    public int addLeilao(String item , Vendedor v , double p){
+    public int addLeilao(String item , String usn , double p){
         int aux;
+        Vendedor vend;
+        Utilizador u;
+        locker.readLockUti();
+        u = utilizadores.get(usn);
+        locker.readUnlockUti();
+        if (u instanceof Vendedor)
+            vend = (Vendedor) u;
+        else{
+            return -1;
+        }
+        
+        
         locker.writeLockInc();
         incrementador++;
         aux = incrementador;
         locker.writeUnlockInc();
         
         locker.writeLockAti();
-        ativos.put(aux,(new Leilao(item,v,p)));
+        ativos.put(aux,(new Leilao(item,vend,p)));
         locker.writeUnlockAti();
         
 	return incrementador;	
