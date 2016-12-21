@@ -24,8 +24,9 @@ public class Leiloes_Server {
             cs = ss.accept();
             (new Thread (new Handler(cs,myLeiloeira))).start();
             
+            
         }
         
     }
-    
+
 }

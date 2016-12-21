@@ -34,6 +34,7 @@ public class Locker {
     private int numReHis;
     private int numWrHis;
     int wantWriteHis;
+    public final Condition addedNewHistorico;
     
     private final Lock lUti;
     private final Condition okToReadUti;
@@ -42,6 +43,14 @@ public class Locker {
     private int numWrUti;
     int wantWriteUti;
         
+    private final Lock lUlF;
+    private final Condition okToReadUlF;
+    private final Condition okToWriteUlF;
+    private int numReUlF;
+    private int numWrUlF;
+    int wantWriteUlF;
+    
+    
     public Locker(){
         lInc = new ReentrantLock();
         okToReadInc = lInc.newCondition();
@@ -64,6 +73,7 @@ public class Locker {
         numReHis = 0;
         numWrHis = 0;
         wantWriteInc = 0;
+        addedNewHistorico = lHis.newCondition();
 
         
         lUti = new ReentrantLock();
@@ -72,6 +82,14 @@ public class Locker {
         numReUti = 0;
         numWrUti = 0; 
         wantWriteUti = 0;
+        
+        
+        lUlF = new ReentrantLock();
+        okToReadUlF = lUlF.newCondition();
+        okToWriteUlF = lUlF.newCondition();
+        numReUlF = 0;
+        numWrUlF = 0;
+        wantWriteUlF = 0;
 
     }
     
@@ -126,6 +144,19 @@ public class Locker {
         okToReadUti.signalAll();
         lUti.unlock();
     }
+    
+    public void readLockUlF(){
+        lUlF.lock();
+        while (numReUlF > 0 || numWrUlF > 0){
+            try{
+                okToReadUlF.await();
+            }
+            catch (InterruptedException e){};
+        }
+        numReUlF++;
+        okToReadUlF.signalAll();
+        lUlF.unlock();
+    }
 
     public void readUnlockInc(){
         lInc.lock();
@@ -153,6 +184,13 @@ public class Locker {
         numReUti--;
         if (numReUti==0)
             okToWriteUti.signalAll();
+    }
+    
+    public void readUnlockUlF(){
+        lUlF.lock();
+        numReUlF--;
+        if (numReUlF==0)
+            okToWriteUlF.signalAll();
     }
     
     public void writeLockInc(){
@@ -212,6 +250,20 @@ public class Locker {
         lUti.unlock();
     }
     
+    public void writeLockUlF(){
+        lUlF.lock();
+        wantWriteUlF++;
+        while (numWrUlF > 0 || numReUlF > 0){
+            try{
+                okToWriteUlF.await();
+            }
+            catch (InterruptedException e){};
+        }
+        wantWriteUlF--;
+        numWrUlF++;
+        lUlF.unlock();
+    }
+    
     public void writeUnlockInc(){
         lInc.lock();
         numWrInc--;
@@ -244,5 +296,17 @@ public class Locker {
         okToReadUti.signalAll();
         okToWriteUti.signalAll();
         lUti.unlock();
+    }
+    
+    public void writeUnlockUlF(){
+        lUlF.lock();
+        numWrUlF--;
+        okToReadUlF.signalAll();
+        okToWriteUlF.signalAll();
+        lUlF.unlock();
+    }
+    
+    public int getNumReUlF(){
+        return numReUlF;
     }
 }

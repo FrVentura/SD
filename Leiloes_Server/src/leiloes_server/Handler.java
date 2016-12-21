@@ -52,6 +52,7 @@ public class Handler implements Runnable {
                             out.println("from server: Success, username is \""+ usn + "\" password is \""+pwd+"\"");
                             out.println("situation1");
                             situation = 1;
+                            (new Thread (new HandlerAssynchronous(mySocket,myLeiloeira,usn))).start();
                         }
                         else{
                             out.println("from server: Fail");
@@ -66,6 +67,7 @@ public class Handler implements Runnable {
                         if (myLeiloeira.addUtilizador(comp) == true){
                             out.println("from server: Success, username is \""+ usn + "\" password is \""+pwd+"\"");
                             situation = 2;
+                            (new Thread (new HandlerAssynchronous(mySocket,myLeiloeira,usn))).start();
                         }
                         else{
                             out.println("from server: Fail");
@@ -79,6 +81,7 @@ public class Handler implements Runnable {
                         if (myLeiloeira.authenticate(usn,pwd,1) == true){
                             out.println("from server: bem-vindo");
                             situation = 3;
+                            (new Thread (new HandlerAssynchronous(mySocket,myLeiloeira,usn))).start();
                         }
                         else{
                             out.println("from server: Fail");
@@ -92,6 +95,7 @@ public class Handler implements Runnable {
                         if (myLeiloeira.authenticate(usn,pwd,2) == true){
                             out.println("from server: bem-vindo");
                             situation = 4;
+                            (new Thread (new HandlerAssynchronous(mySocket,myLeiloeira,usn))).start();
                         }
                         else{
                             out.println("from server: Fail");

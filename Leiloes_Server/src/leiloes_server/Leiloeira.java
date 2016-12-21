@@ -7,7 +7,9 @@ package leiloes_server;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -23,6 +25,7 @@ public class Leiloeira {
     private TreeMap<Integer,Leilao> historico; // tem todos os Leilões que já acabaram
     private TreeMap<String,Utilizador> utilizadores; // A string é o usn do utilizador.
     private Locker locker;
+    private int ultFechado;
 
 
 
@@ -48,6 +51,7 @@ public class Leiloeira {
 	this.ativos = leil.getAtivosDeep(); 
         this.historico = leil.getHistoricoDeep();
         this.locker = new Locker(); // vale a pena fazer deep?
+        this.ultFechado = leil.getUtFechado();
     }
 
 	// Gets
@@ -97,6 +101,10 @@ public class Leiloeira {
             ret.put(entry.getKey(), entry.getValue().clone());
         }
         return ret;
+    }
+    
+    private int getUtFechado() {
+        return ultFechado;
     }
 
     
@@ -230,9 +238,39 @@ public class Leiloeira {
         }
         
         locker.writeLockHis();
-        historico.put(idLeil,l);	
+        locker.writeLockUlF();
+        historico.put(idLeil,l);
+        ultFechado = idLeil;
+        
+        locker.writeUnlockUlF();
+        
+        locker.addedNewHistorico.signalAll();
+        
+            locker.writeLockUlF();
+            locker.writeUnlockUlF();
+        //while (locker.getNumReUlF() > 0);
+        
+        locker.writeUnlockUlF();
 	locker.writeUnlockHis();
         
 	return true;
+    }
+    
+    public boolean esperarPorHistorico(String usn) throws InterruptedException{
+        
+        locker.addedNewHistorico.await();
+        locker.readLockHis();
+        locker.readLockUlF();
+        TreeSet<Comprador> tmp;
+        tmp = historico.get(ultFechado).getListaLances();
+        locker.readUnlockHis();
+        locker.readUnlockUlF();
+        for (Comprador c : tmp){
+            if (c.getUsername().equals(usn)){
+                locker.readUnlockUlF();
+                return true;
+            }
+        }
+        return false;
     }
 }
