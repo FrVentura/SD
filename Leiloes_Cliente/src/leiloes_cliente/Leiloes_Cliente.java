@@ -22,7 +22,7 @@ public class Leiloes_Cliente {
     
     public static void main (String args[]) throws IOException, UnknownHostException{
         
-        Socket cs = new Socket("127.0.0.1", 9997);
+        Socket cs = new Socket("127.0.0.1", 9999);
 
         out = new PrintWriter (cs.getOutputStream(), true);
         in = new BufferedReader(new InputStreamReader(cs.getInputStream()));
@@ -62,7 +62,7 @@ public class Leiloes_Cliente {
             out.println(opcao);
             
             switch(opcao){
-                case "0":
+                case "0":   
                     modo = Modo.QUIT;
                 case "1":
                     clean();
@@ -145,7 +145,7 @@ public class Leiloes_Cliente {
                         System.out.println("Introduza uma password");
                         password = sin.readLine();
                         out.println(password);
-                        modo = Modo.COMPRADOR;
+                        modo = Modo.VENDEDOR;
                         //System.out.println(in.readLine());
                         break;
                 case "2":
@@ -182,13 +182,14 @@ public class Leiloes_Cliente {
                         System.out.println("Introduza a sua password");
                         password = sin.readLine();
                         out.println(password);
-                        modo = Modo.VENDEDOR; // FALTA MUDAR PARA SABER SE LOGIN E VALIDO OU N
+                        modo = Modo.COMPRADOR; // FALTA MUDAR PARA SABER SE LOGIN E VALIDO OU N
                         //System.out.println(in.readLine());
                         break;
                 default:
                         reler = true;
+                        break;
             }
-        } while (reler != true);
+        } while (reler);
     }
             
     public static void loadMenus(){
