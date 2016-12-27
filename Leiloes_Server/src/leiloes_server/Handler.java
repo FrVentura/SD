@@ -69,6 +69,7 @@ public class Handler implements Runnable {
                         comp = new Comprador(usn,pwd);
                         if (myLeiloeira.addUtilizador(comp) == true){
                             out.println("from server: Success, username is \""+ usn + "\" password is \""+pwd+"\"");
+                            out.println("situation2");
                             situation = 2;
                             (new Thread (new HandlerAssynchronous(mySocket,myLeiloeira,usn))).start();
                         }
@@ -83,6 +84,7 @@ public class Handler implements Runnable {
                         pwd = in.readLine();
                         if (myLeiloeira.authenticate(usn,pwd,1) == true){
                             out.println("from server: bem-vindo");
+                            out.println("situation3");
                             situation = 3;
                             (new Thread (new HandlerAssynchronous(mySocket,myLeiloeira,usn))).start();
                         }
@@ -97,6 +99,7 @@ public class Handler implements Runnable {
                         pwd = in.readLine();
                         if (myLeiloeira.authenticate(usn,pwd,2) == true){
                             out.println("from server: bem-vindo");
+                            out.println("situation4");
                             situation = 4;
                             (new Thread (new HandlerAssynchronous(mySocket,myLeiloeira,usn))).start();
                         }
@@ -115,45 +118,74 @@ public class Handler implements Runnable {
             double preco = -1;
             String item;
                     
-            if (situation==1 || situation==3){
+            if (situation==1 || situation==3){ // caso do Vendedor :: nao sai daqui ate desconectar
+                while (true){
+                    if( (curr = in.readLine()) != null);
+                        choice = Integer.parseInt(curr);
 
-                if( (curr = in.readLine()) != null);
-                    choice = Integer.parseInt(curr);
-                    
-                switch (choice){
-                    case 1:
-                        ArrayList<String> listaLeiloes = new ArrayList<>();
-                        listaLeiloes = myLeiloeira.ListarLeiloes(usn);
-                        out.println("from server: a Listar leiloes\n");
-                        for (String s : listaLeiloes){
-                            out.println(s);
-                        }
-                        break;
-                        
-                    case 2:
-                        if((curr = in.readLine()) != null);
-                            item = curr;
-                        if((curr = in.readLine()) != null);
-                            preco = Double.parseDouble(curr);
-                        idLeilao = myLeiloeira.addLeilao(item, usn, preco);
-                        out.println("from server: criado leilao com o id: "+idLeilao);
-                        break;
+                    switch (choice){
+                        case 1:
+                            ArrayList<String> listaLeiloes = new ArrayList<>();
+                            listaLeiloes = myLeiloeira.ListarLeiloes(usn);
+                            out.println("from server: a Listar leiloes\n");
+                            for (String s : listaLeiloes){
+                                out.println(s);
+                            }
+                            break;
 
-                    case 3:
-                        out.println("from server: a finalizar leilao: ");
-                        if((curr = in.readLine()) != null);
-                            idLeilao = Integer.parseInt(curr);
-                        if (myLeiloeira.fecharLeilao(idLeilao, usn)){
-                            out.println("sucesso, leilao finalizado");
-                        }
-                        break;
-                    default:
-                        break;
-                }    
+                        case 2:
+                            if((curr = in.readLine()) != null);
+                                item = curr;
+                            if((curr = in.readLine()) != null);
+                                preco = Double.parseDouble(curr);
+                            idLeilao = myLeiloeira.addLeilao(item, usn, preco);
+                            out.println("from server: criado leilao com o id: "+idLeilao);
+                            break;
 
+                        case 3:
+                            out.println("from server: a finalizar leilao: ");
+                            if((curr = in.readLine()) != null);
+                                idLeilao = Integer.parseInt(curr);
+                            if (myLeiloeira.fecharLeilao(idLeilao, usn)){
+                                out.println("sucesso, leilao finalizado");
+                            }
+                            break;
+                        default:
+                            break;
+                    }    
+                }
             }
-            else if (situation == 2 || situation ==4){
-            
+            else if (situation == 2 || situation == 4){ // Caso do comprador :: nao sai daqui ate desconectar
+                while (true){
+                    
+                    if( (curr = in.readLine()) != null);
+                        choice = Integer.parseInt(curr);
+
+                    switch (choice){
+                        case 1:
+                            ArrayList<String> listaLeiloes = new ArrayList<>();
+                            listaLeiloes = myLeiloeira.ListarLeiloes(usn);
+                            out.println("from server: a Listar leiloes\n");
+                            for (String s : listaLeiloes){
+                                out.println(s);
+                            }
+                            break;
+
+                        case 2:
+                            if((curr = in.readLine()) != null);
+                                idLeilao = Integer.parseInt(curr);
+                            if((curr = in.readLine()) != null);
+                                preco = Double.parseDouble(curr);
+                            if(myLeiloeira.Licitar(idLeilao, usn, preco)){
+                                out.println("from server: acabou de licitar num leilao\n");
+                            }
+                            else
+                                out.println("from server: nao foi possivel licitat\n");
+                            break;
+                        default:
+                            break;
+                    }    
+                }
             }
         }
 
