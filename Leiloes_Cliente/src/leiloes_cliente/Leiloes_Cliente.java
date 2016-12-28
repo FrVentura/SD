@@ -32,12 +32,11 @@ public class Leiloes_Cliente {
         in = new BufferedReader(new InputStreamReader(cs.getInputStream()));
         sin = new BufferedReader(new InputStreamReader(System.in));
         
-        System.out.println("passei");
 
         loadMenus();
-        Thread async = new Thread (new HandlerAsyncClient(in));
+        //Thread async = new Thread (new HandlerAsyncClient(in));
         Thread listen = new Thread (new HandlerListener(cs,in,locker));
-        async.start();
+        //async.start();
         listen.start();
         modo = Modo.VISITOR;
         

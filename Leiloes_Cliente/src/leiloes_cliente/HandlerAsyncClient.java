@@ -9,8 +9,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -18,29 +16,20 @@ import java.util.logging.Logger;
  */
 public class HandlerAsyncClient implements Runnable {
     
+    Socket cs;
     BufferedReader in;
     Locker locker;
 
-    public HandlerAsyncClient(BufferedReader br) throws IOException, UnknownHostException{
+    public HandlerAsyncClient(Socket s, BufferedReader br, Locker l) throws IOException, UnknownHostException{
         in = br;
+        cs = s;
+        locker = l;
         
     }
 
     @Override
     public void run() {
-        try{
-            
-            String fromSv;
-            while(true){
-                fromSv = in.readLine();
-                System.out.println("from async: " +fromSv);
-
-            }
-
-        }
-        catch (IOException ex) {
-            Logger.getLogger(HandlerListener.class.getName()).log(Level.SEVERE, null, ex);
-        }
-       
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+    
 }

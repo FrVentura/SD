@@ -41,8 +41,7 @@ public class HandlerListener implements Runnable{
                 fromSv = in.readLine();
                 //System.out.println(fromSv);
                 locker.setReceived(fromSv);
-                
-                System.out.println("from listener"+fromSv);
+                                
                 
                 if (fromSv.equals("from server: a Listar leiloes")){
                     
