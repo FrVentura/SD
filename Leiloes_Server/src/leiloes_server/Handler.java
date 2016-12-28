@@ -30,6 +30,7 @@ public class Handler implements Runnable {
         myLeiloeira = lei;
     }
 
+    @Override
     public void run(){
         String curr;
         String usn = "none";
@@ -47,28 +48,31 @@ public class Handler implements Runnable {
 
             switch (choice){
                 case 1:
-                        out.println("from server: a registar novo vendedor");
+                        //out.println("from server: a registar novo vendedor");
                         usn = in.readLine();
                         pwd = in.readLine();
                         vend = new Vendedor(usn,pwd);
+                        System.out.println("passei");
                         if (myLeiloeira.addUtilizador(vend) == true){
-                            out.println("from server: Success, username is \""+ usn + "\" password is \""+pwd+"\"");
+                            //out.println("from server: Success, username is \""+ usn + "\" password is \""+pwd+"\"");
                             out.println("situation1");
                             situation = 1;
-                            (new Thread (new HandlerAssynchronous(mySocket,myLeiloeira,usn))).start();
+                            System.out.println(myLeiloeira.allFree());
+                            //(new Thread (new HandlerAssynchronous(mySocket,myLeiloeira,usn))).start();
                         }
                         else{
                             out.println("from server: Fail");
                             situation = -1;
                         }
+                        System.out.println("passei2");
                         break;
                 case 2:
-                        out.println("from server: a registar novo comprador");
+                        //out.println("from server: a registar novo comprador");
                         usn = in.readLine();
                         pwd = in.readLine();
                         comp = new Comprador(usn,pwd);
                         if (myLeiloeira.addUtilizador(comp) == true){
-                            out.println("from server: Success, username is \""+ usn + "\" password is \""+pwd+"\"");
+                            //out.println("from server: Success, username is \""+ usn + "\" password is \""+pwd+"\"");
                             out.println("situation2");
                             situation = 2;
                             (new Thread (new HandlerAssynchronous(mySocket,myLeiloeira,usn))).start();
@@ -79,11 +83,11 @@ public class Handler implements Runnable {
                         }
                         break;
                 case 3:
-                        out.println("from server: a fazer login como vendedor");
+                        //out.println("from server: a fazer login como vendedor");
                         usn = in.readLine();
                         pwd = in.readLine();
                         if (myLeiloeira.authenticate(usn,pwd,1) == true){
-                            out.println("from server: bem-vindo");
+                            //out.println("from server: bem-vindo");
                             out.println("situation3");
                             situation = 3;
                             (new Thread (new HandlerAssynchronous(mySocket,myLeiloeira,usn))).start();
@@ -94,11 +98,11 @@ public class Handler implements Runnable {
                         }
                         break;
                 case 4:
-                        out.println("from server: a fazer login como comprador");
+                        //out.println("from server: a fazer login como comprador");
                         usn = in.readLine();
                         pwd = in.readLine();
                         if (myLeiloeira.authenticate(usn,pwd,2) == true){
-                            out.println("from server: bem-vindo");
+                            //out.println("from server: bem-vindo");
                             out.println("situation4");
                             situation = 4;
                             (new Thread (new HandlerAssynchronous(mySocket,myLeiloeira,usn))).start();
@@ -139,7 +143,8 @@ public class Handler implements Runnable {
                             if((curr = in.readLine()) != null);
                                 preco = Double.parseDouble(curr);
                             idLeilao = myLeiloeira.addLeilao(item, usn, preco);
-                            out.println("from server: criado leilao com o id: "+idLeilao);
+                            out.println(""+idLeilao);
+                            System.out.println(myLeiloeira.allFree());
                             break;
 
                         case 3:

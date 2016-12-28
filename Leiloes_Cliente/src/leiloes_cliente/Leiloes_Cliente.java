@@ -20,32 +20,41 @@ public class Leiloes_Cliente {
         QUIT, VISITOR, COMPRADOR, VENDEDOR
     }
     
-    public static void main (String args[]) throws IOException, UnknownHostException{
+    public static void main (String args[]) throws IOException, UnknownHostException, InterruptedException{
         
         Socket cs = new Socket("127.0.0.1", 9999);
+        
+        
 
+        Locker locker = new Locker();
         out = new PrintWriter (cs.getOutputStream(), true);
         in = new BufferedReader(new InputStreamReader(cs.getInputStream()));
         sin = new BufferedReader(new InputStreamReader(System.in));
+        
+        System.out.println("passei");
 
-        loadMenus();        
-        (new Thread (new HandlerListener(cs,in))).start();
+        loadMenus();
+        
+        Thread listen = new Thread (new HandlerListener(cs,in,locker));
+        listen.start();
         modo = Modo.VISITOR;
         
         do {
-            System.out.println("ola");
             switch(modo){
                 case VISITOR:
-                    menuRegistoLogin();
+                    menuRegistoLogin(locker);
                     break;
                 case COMPRADOR:
                     menuComprador();
                     break;
                 case VENDEDOR:
-                    menuVendedor();
-                    break;                               
+                    menuVendedor(locker);
+                    break; 
             }
         }while(modo!=Modo.QUIT);
+        
+
+        
 
         //in.close();
         //sin.close();
@@ -81,7 +90,7 @@ public class Leiloes_Cliente {
         } while (modo != Modo.QUIT);
     }
     
-    public static void menuVendedor() throws IOException {
+    public static void menuVendedor(Locker l) throws IOException {
         do {
             clean();
             vendedorMenu.executa();
@@ -107,6 +116,10 @@ public class Leiloes_Cliente {
                     System.out.print("Introduza o valor inicial: ");
                     input = sin.readLine();
                     out.println(input);
+                    l.getL().lock();
+                    System.out.println("Leilao criado com sucesso. Id: "+l.getReceived());
+                    l.getL().unlock();
+                    l.setAvailable(true);
                     break;
                 
                 case "3":
@@ -121,7 +134,7 @@ public class Leiloes_Cliente {
         } while (modo != Modo.QUIT);
     }
     
-    public static void menuRegistoLogin() throws IOException{
+    public static void menuRegistoLogin(Locker l) throws IOException, InterruptedException{
         String username;
         String password;
         boolean reler = false;     
@@ -134,9 +147,12 @@ public class Leiloes_Cliente {
             
             switch(opcao){
                 case "0":
+                        reler = false;
                         modo = Modo.QUIT;
+                        break;
                         
                 case "1":
+                        reler = false;
                         //System.out.println(in.readLine());
                         System.out.println("Introduza um username");
                         username = sin.readLine();
@@ -145,10 +161,19 @@ public class Leiloes_Cliente {
                         System.out.println("Introduza uma password");
                         password = sin.readLine();
                         out.println(password);
-                        modo = Modo.VENDEDOR;
-                        //System.out.println(in.readLine());
+                        l.getL().lock();
+                        //l.getOkGo().await();
+                        if (l.getReceived().equals("situation1")){
+                            modo = Modo.VENDEDOR;
+                        }
+                        else
+                            System.out.println("Dados inválidos");
+                        l.getL().unlock();
+                        l.setAvailable(true);
+                        
                         break;
                 case "2":
+                        reler = false;
                         //System.out.println(in.readLine());
                         System.out.println("Introduza um username");
                         username = sin.readLine();
@@ -158,10 +183,17 @@ public class Leiloes_Cliente {
                         System.out.println("Introduza uma password");
                         password = sin.readLine();
                         out.println(password);
-                        modo = Modo.COMPRADOR; // FALTA MUDAR PARA SABER SE LOGIN E VALIDO OU N
-                        //System.out.println(in.readLine());
+                        l.getL().lock();
+                        if(l.getReceived().equals("situation2"))
+                            modo = Modo.COMPRADOR;
+                        else
+                            System.out.println("Dados inválidos");
+                        l.getL().unlock();
+                        l.setAvailable(true);
+                        
                         break;
                 case "3":
+                        reler = false;
                         //System.out.println(in.readLine());
                         System.out.println("Introduza o seu username");
                         username = sin.readLine();
@@ -170,10 +202,16 @@ public class Leiloes_Cliente {
                         System.out.println("Introduza a sua password");
                         password = sin.readLine();
                         out.println(password);
-                        modo = Modo.VENDEDOR; // FALTA MUDAR PARA SABER SE LOGIN E VALIDO OU N
-                        //System.out.println(in.readLine());
+                        l.getL().lock();
+                        if(l.getReceived().equals("situation3"))
+                            modo = Modo.COMPRADOR;
+                        else
+                            System.out.println("Dados inválidos");
+                        l.getL().unlock();
+                        l.setAvailable(true);
                         break;
                 case "4":
+                        reler = false;
                         //System.out.println(in.readLine());
                         System.out.println("Introduza o seu username");
                         username = sin.readLine();
@@ -182,8 +220,13 @@ public class Leiloes_Cliente {
                         System.out.println("Introduza a sua password");
                         password = sin.readLine();
                         out.println(password);
-                        modo = Modo.COMPRADOR; // FALTA MUDAR PARA SABER SE LOGIN E VALIDO OU N
-                        //System.out.println(in.readLine());
+                        l.getL().lock();
+                        if(l.getReceived().equals("situation4"))
+                            modo = Modo.COMPRADOR;
+                        else
+                            System.out.println("Dados inválidos");
+                        l.getL().unlock();
+                        l.setAvailable(true);
                         break;
                 default:
                         reler = true;

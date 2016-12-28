@@ -294,7 +294,7 @@ public class Locker {
         okToReadUti.signalAll();
         okToWriteUti.signalAll();
         lUti.unlock();
-    }
+        }
     
     public void writeUnlockaAv(){
         laAv.lock();
@@ -307,4 +307,17 @@ public class Locker {
     public int getNumReaAv(){
         return numReaAv;
     }
+    
+    
+    public boolean allFree(){
+        boolean ret = false;
+        ret = lInc.tryLock() && lAti.tryLock() && lHis.tryLock() && lUti.tryLock() && laAv.tryLock();
+        lInc.unlock();
+        lAti.unlock();
+        lHis.unlock();
+        lUti.unlock();
+        laAv.unlock();
+        return ret;
+    }
+    
 }

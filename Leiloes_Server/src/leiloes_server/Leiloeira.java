@@ -132,7 +132,7 @@ public class Leiloeira {
         ativos.put(aux,(new Leilao(item,vend,p)));
         locker.writeUnlockAti();
         
-	return incrementador;	
+	return aux;	
     }
 
     public boolean addUtilizador(Utilizador u){
@@ -281,5 +281,10 @@ public class Leiloeira {
         }
         */
         return false;
+    }
+    
+    
+    public boolean allFree(){
+        return locker.allFree();
     }
 }
