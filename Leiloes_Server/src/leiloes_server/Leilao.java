@@ -92,6 +92,7 @@ public class Leilao {
             s.append("\n");
             s.append("Maior Licitação: ");
             s.append(this.preco);
+            s.append("\n");
             if (compradorMaiorLance != null){
                 s.append("Comprador com maior lance: ");
                 s.append(compradorMaiorLance.getUsername());
@@ -118,6 +119,7 @@ public class Leilao {
                 s.append("\n");
                 s.append("Maior Licitação: ");
                 s.append(this.preco);
+                s.append("\n");
                 if (compradorMaiorLance != null){
                     s.append("Comprador com maior lance: ");
                     s.append(compradorMaiorLance.getUsername());

@@ -33,7 +33,6 @@ public class Handler implements Runnable {
     @Override
     public void run(){
         
-        out.println("TESTE");
         String curr;
         String usn = "none";
         String pwd;
@@ -61,6 +60,7 @@ public class Handler implements Runnable {
                             if (myLeiloeira.addUtilizador(vend) == true){
                                 //out.println("from server: Success, username is \""+ usn + "\" password is \""+pwd+"\"");
                                 out.println("situation1");
+                                //System.out.println("situation1");
                                 situation = 1;
                                 //(new Thread (new HandlerAssynchronous(mySocket,myLeiloeira,usn))).start();
                             }

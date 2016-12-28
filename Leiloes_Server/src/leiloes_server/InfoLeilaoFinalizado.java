@@ -22,7 +22,10 @@ public class InfoLeilaoFinalizado {
     public InfoLeilaoFinalizado(int idLeilao, Leilao l){
         id = idLeilao;
         vendedor = l.getVendedor().getUsername();
-        vencedor = l.getCompradorMaiorLance().getUsername();
+        if (l.getCompradorMaiorLance()!=null)
+            vencedor = l.getCompradorMaiorLance().getUsername();
+        else
+            vencedor = "sem vencedor";
         licitadores = new ArrayList<>();
         for (Comprador c : l.getListaLances()){
             licitadores.add(c.getUsername());

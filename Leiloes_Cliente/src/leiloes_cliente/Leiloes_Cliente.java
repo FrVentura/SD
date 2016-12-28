@@ -34,7 +34,7 @@ public class Leiloes_Cliente {
         
 
         loadMenus();
-        //Thread async = new Thread (new HandlerAsyncClient(in));
+        //Thread async = new Thread (new HandlerAsyncClient(cs,in,locker));
         Thread listen = new Thread (new HandlerListener(cs,in,locker));
         //async.start();
         listen.start();
