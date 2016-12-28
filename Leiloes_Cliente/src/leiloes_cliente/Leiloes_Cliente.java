@@ -57,10 +57,12 @@ public class Leiloes_Cliente {
 
         
 
-        //in.close();
-        //sin.close();
-        //out.close();
-        //cs.close();
+        in.close();
+        sin.close();
+        out.close();
+        cs.close();
+        listen.interrupt();
+        System.exit(0);
         
     }
     
