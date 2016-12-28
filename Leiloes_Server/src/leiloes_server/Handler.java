@@ -52,19 +52,16 @@ public class Handler implements Runnable {
                         usn = in.readLine();
                         pwd = in.readLine();
                         vend = new Vendedor(usn,pwd);
-                        System.out.println("passei");
                         if (myLeiloeira.addUtilizador(vend) == true){
                             //out.println("from server: Success, username is \""+ usn + "\" password is \""+pwd+"\"");
                             out.println("situation1");
                             situation = 1;
-                            System.out.println(myLeiloeira.allFree());
                             //(new Thread (new HandlerAssynchronous(mySocket,myLeiloeira,usn))).start();
                         }
                         else{
                             out.println("from server: Fail");
                             situation = -1;
                         }
-                        System.out.println("passei2");
                         break;
                 case 2:
                         //out.println("from server: a registar novo comprador");
@@ -144,7 +141,6 @@ public class Handler implements Runnable {
                                 preco = Double.parseDouble(curr);
                             idLeilao = myLeiloeira.addLeilao(item, usn, preco);
                             out.println(""+idLeilao);
-                            System.out.println(myLeiloeira.allFree());
                             break;
 
                         case 3:

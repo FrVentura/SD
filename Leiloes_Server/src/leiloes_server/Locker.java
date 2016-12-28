@@ -161,6 +161,7 @@ public class Locker {
         numReInc--;
         if (numReInc==0)
             okToWriteInc.signalAll();
+        lInc.unlock();
     }
 
     public void readUnlockAti(){
@@ -168,6 +169,7 @@ public class Locker {
         numReAti--;
         if (numReAti==0)
             okToWriteAti.signalAll();
+        lAti.unlock();
     }
  
     public void readUnlockHis(){
@@ -175,6 +177,7 @@ public class Locker {
         numReHis--;
         if (numReHis==0)
             okToWriteHis.signalAll();
+        lHis.unlock();
     }
     
     public void readUnlockUti(){
@@ -182,6 +185,7 @@ public class Locker {
         numReUti--;
         if (numReUti==0)
             okToWriteUti.signalAll();
+        lUti.unlock();
     }
     
     public void readUnlockaAv(){
@@ -189,6 +193,7 @@ public class Locker {
         numReaAv--;
         if (numReaAv==0)
             okToWriteaAv.signalAll();
+        laAv.unlock();
     }
     
     public void writeLockInc(){
