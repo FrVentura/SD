@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 public class Leiloes_Cliente {
     private static PrintWriter out;
@@ -34,8 +35,9 @@ public class Leiloes_Cliente {
         System.out.println("passei");
 
         loadMenus();
-        
+        Thread async = new Thread (new HandlerAsyncClient(in));
         Thread listen = new Thread (new HandlerListener(cs,in,locker));
+        async.start();
         listen.start();
         modo = Modo.VISITOR;
         
@@ -45,7 +47,7 @@ public class Leiloes_Cliente {
                     menuRegistoLogin(locker);
                     break;
                 case COMPRADOR:
-                    menuComprador();
+                    menuComprador(locker);
                     break;
                 case VENDEDOR:
                     menuVendedor(locker);
@@ -63,7 +65,7 @@ public class Leiloes_Cliente {
         
     }
     
-    public static void menuComprador() throws IOException {
+    public static void menuComprador(Locker l) throws IOException, InterruptedException {
         do {
             clean();
             compradorMenu.executa();
@@ -75,17 +77,39 @@ public class Leiloes_Cliente {
                     modo = Modo.QUIT;
                 case "1":
                     clean();
-                    System.out.println(in.readLine()); // COMO É Q VOU RECEBER A LISTA?
+                    l.getL().lock();
+                    ArrayList<String> tmp = l.getArrListDeep();
+                    l.getL().unlock();
+                    l.setAvailable(true);
+                    System.out.println("***** Lista de Leilões *****");
+                    for (String s : tmp)
+                        System.out.println(s);
+                    System.out.println("***** FIM *****");
+                    break;
  
                 case "2":
                     clean();
-                    System.out.print("ID do Leilão: ");
+                    System.out.println("ID do Leilão: ");
                     String input = sin.readLine();
                     out.println(input);
-                    
-                    System.out.print("A maior licitação é: " + in.readLine() + ".\nLicitação: ");
+                    l.getL().lock();
+                    System.out.println("Maior licitação até ao momento: "+l.getReceived());
+                    l.getL().unlock();
+                    l.setAvailable(true);
+                    System.out.print("Licitação: ");
                     input = sin.readLine();
                     out.println(input);
+                    
+                    l.getL().lock();
+                    String tmp2 = l.getReceived();
+                    l.getL().unlock();
+                    l.setAvailable(true);
+                    if (tmp2.equals("sucesso")){
+                        System.out.println("Acabou de licitar com sucesso no leilao.");
+                    }
+                    else{
+                        System.out.println("Não foi possível licitar.\nLeilão foi finalizado ou existe oferta maior. Repetir listagem.");
+                    }
             }
         } while (modo != Modo.QUIT);
     }
@@ -104,7 +128,14 @@ public class Leiloes_Cliente {
                     
                 case "1":
                     clean();
-                    System.out.println(in.readLine());
+                    l.getL().lock();
+                    ArrayList<String> tmp = l.getArrListDeep();
+                    l.getL().unlock();
+                    l.setAvailable(true);
+                    System.out.println("***** Lista de Leilões *****");
+                    for (String s : tmp)
+                        System.out.println(s);
+                    System.out.println("***** FIM *****");
                     break;
                     
                 case "2":
@@ -127,6 +158,11 @@ public class Leiloes_Cliente {
                     System.out.print("Introduza o ID do leilão que pretende terminar: ");
                     input2 = sin.readLine();
                     out.println(input2);
+                    l.getL().lock();
+                    System.out.println("Leilao terminado com sucesso. Id: "+l.getReceived());
+                    l.getL().unlock();
+                    l.setAvailable(true);
+                    
                     break;
                     
                     

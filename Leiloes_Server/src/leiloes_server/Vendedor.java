@@ -34,4 +34,10 @@ public class Vendedor extends Utilizador{
     public Vendedor clone(){
         return new Vendedor(this);
     }
+    
+        @Override
+    public int compareTo(Object o) {
+        Vendedor c = (Vendedor) o;
+        return (this.username.compareTo(c.username));
+    }
 }

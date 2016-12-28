@@ -192,8 +192,8 @@ public class Leiloeira {
         }
         synchronized(tmp){
             locker.readUnlockAti();
-            tmp.licitar((Comprador) u, valor);
-            ret = true;
+            ret = tmp.licitar((Comprador) u, valor);
+            //ret = true;
         }
         
         return ret;
@@ -281,6 +281,15 @@ public class Leiloeira {
         }
         */
         return false;
+    }
+    
+    public double precoLeilao(Integer id){
+        double ret = -1;
+        locker.readLockAti();
+        if (ativos.containsKey(id))
+            ret = ativos.get(id).getPreco();
+        locker.readUnlockAti();
+        return ret;
     }
     
     

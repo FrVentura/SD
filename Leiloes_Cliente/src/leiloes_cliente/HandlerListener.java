@@ -23,6 +23,7 @@ public class HandlerListener implements Runnable{
         
     }
 
+
     @Override
     public void run(){
         
@@ -31,14 +32,29 @@ public class HandlerListener implements Runnable{
             String fromSv;
             while(true){
                 
+                
                 //while(locker.isAvailable()==true)
                   //  locker.getOkGo().await();
                     
                 locker.getL().lock();
                 locker.setAvailable(false);
                 fromSv = in.readLine();
-                System.out.println(fromSv);
+                //System.out.println(fromSv);
                 locker.setReceived(fromSv);
+                
+                System.out.println("from listener"+fromSv);
+                
+                if (fromSv.equals("from server: a Listar leiloes")){
+                    
+                    locker.getArrList().clear();
+                    
+                    fromSv = in.readLine();
+                    while (fromSv.equals("end")==false){
+                        locker.getArrList().add(fromSv);
+                        fromSv = in.readLine();
+                    }
+                    
+                }
                 //locker.getOkGo().signalAll();
                 locker.getL().unlock();
                 while (locker.isAvailable()==false);

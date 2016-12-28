@@ -35,4 +35,11 @@ public class Comprador extends Utilizador{
         return new Comprador(this);
     }
 
+
+    @Override
+    public int compareTo(Object o) {
+        Comprador c = (Comprador) o;
+        return (this.username.compareTo(c.username));
+    }
+
 }

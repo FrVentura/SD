@@ -5,6 +5,7 @@
  */
 package leiloes_cliente;
 
+import java.util.ArrayList;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -18,11 +19,13 @@ public class Locker {
     private Lock l;
     private Condition okGo;
     private boolean available;
+    private ArrayList<String> arrList;
     
     public Locker(){
         l = new ReentrantLock();
         okGo = l.newCondition();
         available = false;
+        arrList = new ArrayList<>();
     }
 
     public String getReceived() {
@@ -56,10 +59,22 @@ public class Locker {
     public void setAvailable(boolean available) {
         this.available = available;
     }
+
+    public ArrayList<String> getArrList() {
+        return arrList;
+    }
+
+    public void setArrList(ArrayList<String> arrList) {
+        this.arrList = arrList;
+    }
     
-   
-    
-    
+    public ArrayList<String> getArrListDeep(){
+        ArrayList<String> ret = new ArrayList();
+        for (String s: arrList){
+            ret.add(s);
+        }
+        return ret;
+    }
     
     
 }

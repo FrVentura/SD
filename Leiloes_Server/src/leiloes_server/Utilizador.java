@@ -9,7 +9,7 @@ package leiloes_server;
  *
  * @author FrVentura
  */
-public abstract class Utilizador {
+public abstract class Utilizador implements Comparable {
     
     String username;
     String password;

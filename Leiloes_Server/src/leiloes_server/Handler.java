@@ -32,6 +32,8 @@ public class Handler implements Runnable {
 
     @Override
     public void run(){
+        
+        out.println("TESTE");
         String curr;
         String usn = "none";
         String pwd;
@@ -40,76 +42,81 @@ public class Handler implements Runnable {
         int choice=0;  
         int situation=0; // variavel que define a situacao do utilizador no final do register/login
         try{
-            while (choice<1 || choice>4){
-                if( (curr = in.readLine()) != null);
-                    choice = Integer.parseInt(curr);
-            }
-                
 
-            switch (choice){
-                case 1:
-                        //out.println("from server: a registar novo vendedor");
-                        usn = in.readLine();
-                        pwd = in.readLine();
-                        vend = new Vendedor(usn,pwd);
-                        if (myLeiloeira.addUtilizador(vend) == true){
-                            //out.println("from server: Success, username is \""+ usn + "\" password is \""+pwd+"\"");
-                            out.println("situation1");
-                            situation = 1;
-                            //(new Thread (new HandlerAssynchronous(mySocket,myLeiloeira,usn))).start();
-                        }
-                        else{
-                            out.println("from server: Fail");
-                            situation = -1;
-                        }
+            while(situation<1 || situation > 4){
+                choice = -1;
+                
+                while (choice<1 || choice>4){
+                    if( (curr = in.readLine()) != null);
+                        choice = Integer.parseInt(curr);
+                }
+                
+                
+                switch (choice){
+                    case 1:
+                            //out.println("from server: a registar novo vendedor");
+                            usn = in.readLine();
+                            pwd = in.readLine();
+                            vend = new Vendedor(usn,pwd);
+                            if (myLeiloeira.addUtilizador(vend) == true){
+                                //out.println("from server: Success, username is \""+ usn + "\" password is \""+pwd+"\"");
+                                out.println("situation1");
+                                situation = 1;
+                                //(new Thread (new HandlerAssynchronous(mySocket,myLeiloeira,usn))).start();
+                            }
+                            else{
+                                out.println("from server: Fail");
+                                situation = -1;
+                            }
+                            break;
+                    case 2:
+                            //out.println("from server: a registar novo comprador");
+                            usn = in.readLine();
+                            pwd = in.readLine();
+                            comp = new Comprador(usn,pwd);
+                            if (myLeiloeira.addUtilizador(comp) == true){
+                                //out.println("from server: Success, username is \""+ usn + "\" password is \""+pwd+"\"");
+                                out.println("situation2");
+                                situation = 2;
+                                (new Thread (new HandlerAssynchronous(mySocket,myLeiloeira,usn))).start();
+                            }
+                            else{
+                                out.println("from server: Fail");
+                                situation = -1;
+                            }
+                            break;
+                    case 3:
+                            //out.println("from server: a fazer login como vendedor");
+                            usn = in.readLine();
+                            pwd = in.readLine();
+                            if (myLeiloeira.authenticate(usn,pwd,1) == true){
+                                //out.println("from server: bem-vindo");
+                                out.println("situation3");
+                                situation = 3;
+                                (new Thread (new HandlerAssynchronous(mySocket,myLeiloeira,usn))).start();
+                            }
+                            else{
+                                out.println("from server: Fail");
+                                situation = -1;
+                            }
+                            break;
+                    case 4:
+                            //out.println("from server: a fazer login como comprador");
+                            usn = in.readLine();
+                            pwd = in.readLine();
+                            if (myLeiloeira.authenticate(usn,pwd,2) == true){
+                                //out.println("from server: bem-vindo");
+                                out.println("situation4");
+                                situation = 4;
+                                (new Thread (new HandlerAssynchronous(mySocket,myLeiloeira,usn))).start();
+                            }
+                            else{
+                                out.println("from server: Fail");
+                                situation = -1;
+                            }
+                    default:
                         break;
-                case 2:
-                        //out.println("from server: a registar novo comprador");
-                        usn = in.readLine();
-                        pwd = in.readLine();
-                        comp = new Comprador(usn,pwd);
-                        if (myLeiloeira.addUtilizador(comp) == true){
-                            //out.println("from server: Success, username is \""+ usn + "\" password is \""+pwd+"\"");
-                            out.println("situation2");
-                            situation = 2;
-                            (new Thread (new HandlerAssynchronous(mySocket,myLeiloeira,usn))).start();
-                        }
-                        else{
-                            out.println("from server: Fail");
-                            situation = -1;
-                        }
-                        break;
-                case 3:
-                        //out.println("from server: a fazer login como vendedor");
-                        usn = in.readLine();
-                        pwd = in.readLine();
-                        if (myLeiloeira.authenticate(usn,pwd,1) == true){
-                            //out.println("from server: bem-vindo");
-                            out.println("situation3");
-                            situation = 3;
-                            (new Thread (new HandlerAssynchronous(mySocket,myLeiloeira,usn))).start();
-                        }
-                        else{
-                            out.println("from server: Fail");
-                            situation = -1;
-                        }
-                        break;
-                case 4:
-                        //out.println("from server: a fazer login como comprador");
-                        usn = in.readLine();
-                        pwd = in.readLine();
-                        if (myLeiloeira.authenticate(usn,pwd,2) == true){
-                            //out.println("from server: bem-vindo");
-                            out.println("situation4");
-                            situation = 4;
-                            (new Thread (new HandlerAssynchronous(mySocket,myLeiloeira,usn))).start();
-                        }
-                        else{
-                            out.println("from server: Fail");
-                            situation = -1;
-                        }
-                default:
-                    break;
+                }
             }
             
             
@@ -128,10 +135,11 @@ public class Handler implements Runnable {
                         case 1:
                             ArrayList<String> listaLeiloes = new ArrayList<>();
                             listaLeiloes = myLeiloeira.ListarLeiloes(usn);
-                            out.println("from server: a Listar leiloes\n");
+                            out.println("from server: a Listar leiloes");
                             for (String s : listaLeiloes){
                                 out.println(s);
                             }
+                            out.println("end");
                             break;
 
                         case 2:
@@ -144,11 +152,11 @@ public class Handler implements Runnable {
                             break;
 
                         case 3:
-                            out.println("from server: a finalizar leilao: ");
+                            //out.println("from server: a finalizar leilao: ");
                             if((curr = in.readLine()) != null);
                                 idLeilao = Integer.parseInt(curr);
                             if (myLeiloeira.fecharLeilao(idLeilao, usn)){
-                                out.println("sucesso, leilao finalizado");
+                                out.println("idLeilao");
                             }
                             break;
                         default:
@@ -166,22 +174,27 @@ public class Handler implements Runnable {
                         case 1:
                             ArrayList<String> listaLeiloes = new ArrayList<>();
                             listaLeiloes = myLeiloeira.ListarLeiloes(usn);
-                            out.println("from server: a Listar leiloes\n");
+                            out.println("from server: a Listar leiloes");
                             for (String s : listaLeiloes){
                                 out.println(s);
                             }
+                            out.println("end");
                             break;
 
                         case 2:
                             if((curr = in.readLine()) != null);
                                 idLeilao = Integer.parseInt(curr);
+                                
+                            out.println(myLeiloeira.precoLeilao(idLeilao));
+                                
                             if((curr = in.readLine()) != null);
                                 preco = Double.parseDouble(curr);
+                                
                             if(myLeiloeira.Licitar(idLeilao, usn, preco)){
-                                out.println("from server: acabou de licitar num leilao\n");
+                                out.println("sucesso");
                             }
                             else
-                                out.println("from server: nao foi possivel licitat\n");
+                                out.println("insucesso");
                             break;
                         default:
                             break;
