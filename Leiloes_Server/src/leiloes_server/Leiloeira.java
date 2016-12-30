@@ -266,6 +266,7 @@ public class Leiloeira {
     public synchronized boolean  fecharLeilao(Integer idLeil, String usn){
         
         // Adquirir locks
+    locker.writeLockAti();  
        locker.writeLockHis();
             locker.writeLockaAv();
                 locker.writeLockUlF();
@@ -300,6 +301,7 @@ public class Leiloeira {
                  locker.writeUnlockUlF();
             locker.writeUnlockAti();
           locker.writeUnlockHis();
+        locker.writeUnlockAti();  
                 }
                 
                 
@@ -366,7 +368,7 @@ public class Leiloeira {
         
          for(InfoLeilaoFinalizado iL : this.aAvisar){
              s.append(iL.getAviso(usn));
-             if(!s.equals("async;")) return s;
+             if(!s.equals("async:")) return s;
          }
          
          
