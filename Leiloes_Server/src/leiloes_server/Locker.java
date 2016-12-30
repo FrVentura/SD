@@ -50,6 +50,19 @@ public class Locker {
     int wantWriteaAv;
     
     
+    
+    private final Lock ulF;
+    private final Condition okToReadUlF;
+    private final Condition okToWriteUlF;
+    private  int numReadUlF;
+    private  int numWriteUlF;
+    int wantWriteUlF;
+    
+    
+ 
+    
+    
+    
     public Locker(){
         lInc = new ReentrantLock();
         okToReadInc = lInc.newCondition();
@@ -89,7 +102,86 @@ public class Locker {
         numWraAv = 0;
         wantWriteaAv = 0;
 
+        ulF = new ReentrantLock();
+        okToReadUlF = ulF.newCondition();
+        okToWriteUlF = ulF.newCondition();
+        numReadUlF = 0;
+        numWriteUlF = 0;
+        wantWriteUlF = 0;
+        
+        
+    
+        
     }
+    
+
+
+// métodos de lock para o Ultimo Fechado
+    public void readLockUlF(){
+        ulF.lock();
+        try{
+            while( this.numWriteUlF > 0)
+                    okToReadUlF.await();
+            
+            this.numReadUlF++;
+            okToReadUlF.signalAll();
+        
+        }catch(InterruptedException e){        
+        }finally {ulF.unlock();}
+        
+   }
+    
+    public void readUnlockUlF(){
+        ulF.lock();
+        try{
+            this.numReadUlF -- ;
+            if(numReadUlF == 0) okToWriteUlF.signalAll();
+        
+       }finally{ulF.unlock();}
+    
+    }
+    
+    
+    public void writeLockUlF(){
+        ulF.lock();
+        try{
+            this.wantWriteUlF ++;
+            
+            
+            while(this.numReadUlF > 0 || this.numWriteUlF > 0)
+                   this.okToWriteUlF.await();
+            
+            this.wantWriteUlF --;
+            this.numWriteUlF ++;
+            
+            
+        }catch(InterruptedException e){    
+        }finally{ulF.unlock();}
+    
+    
+    
+    }
+    public void writeUnlockUlF(){
+    
+        ulF.lock();
+        try{
+            this.numWriteUlF --;
+            
+            
+            this.okToWriteUlF.signalAll();
+            this.okToReadUlF.signalAll();
+            
+        }finally{ulF.unlock();}
+    
+    
+    
+    }
+    
+    
+    
+    
+    
+    
     
      public void readLockInc(){
         lInc.lock();

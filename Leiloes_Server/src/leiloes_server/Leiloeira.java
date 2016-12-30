@@ -24,9 +24,17 @@ public class Leiloeira {
     private TreeMap<Integer,Leilao> ativos; // 
     private TreeMap<Integer,Leilao> historico; // tem todos os Leilões que já acabaram
     private TreeMap<String,Utilizador> utilizadores; // A string é o usn do utilizador.
+    
     private ArrayList<InfoLeilaoFinalizado> aAvisar;
     private Locker locker;
     private int ultFechado;
+    
+    
+    
+    // temporárias -> a passar para a class Lock
+    // invoca este lock quem mexe em aAvisar, ultFechado, método fecharLeilao e método esperarPorHistorico
+    private final Lock l;
+    Condition espera;
 
 
 
@@ -39,6 +47,12 @@ public class Leiloeira {
 	this.historico = new TreeMap<> ();
 	this.utilizadores = new TreeMap<> ();
         this.locker = new Locker();
+        
+        this.aAvisar = new ArrayList();
+        // temporárias
+        l = new ReentrantLock();
+        espera = l.newCondition();
+        
     }
 
     /**
@@ -53,9 +67,25 @@ public class Leiloeira {
         this.historico = leil.getHistoricoDeep();
         this.locker = new Locker(); // vale a pena fazer deep?
         this.ultFechado = leil.getUtFechado();
+        
+        this.aAvisar = leil.getaAvisar();
+        // temporarias
+        this.l = new ReentrantLock();
+        espera = l.newCondition();
     }
 
 	// Gets
+    public ArrayList<InfoLeilaoFinalizado> getaAvisar(){
+    
+        ArrayList<InfoLeilaoFinalizado> res = new ArrayList<InfoLeilaoFinalizado> ();
+        
+        for(InfoLeilaoFinalizado info : this.aAvisar)
+            res.add(info);
+        
+        
+        return res;
+    
+    }
 
     public int getIncrementador(){
 	return this.incrementador;
@@ -233,8 +263,49 @@ public class Leiloeira {
         return ret;
     }
 	
-    public boolean fecharLeilao(Integer idLeil, String usn){
-        Leilao l;
+    public synchronized boolean  fecharLeilao(Integer idLeil, String usn){
+        
+        // Adquirir locks
+       locker.writeLockHis();
+            locker.writeLockaAv();
+                locker.writeLockUlF();
+                
+                try{
+                // Processo
+                //Remover dos ativos
+                Leilao l = this.ativos.get(idLeil);
+                this.ativos.remove(idLeil);
+                
+                //Colocar no historico
+                this.historico.put(idLeil, l);
+                InfoLeilaoFinalizado info = new InfoLeilaoFinalizado(idLeil,l);
+                
+                //Atualizar aAvisar
+                this.aAvisar.add(info);
+                
+                //atualizar UltFechado
+                this.ultFechado = idLeil;
+                
+                
+                //enviar signall às threads que esperam por histórico
+                 // ALTERAR ISTO   
+                 notifyAll();   
+                    
+                 return true;
+                 
+               }catch(Exception e){ return false;  
+               }
+                // Libertar Locks
+                finally{ 
+                 locker.writeUnlockUlF();
+            locker.writeUnlockAti();
+          locker.writeUnlockHis();
+                }
+                
+                
+            
+        
+        /*Leilao l;
         locker.writeLockUti();
         if(ativos.containsKey(idLeil)){
             l = ativos.get(idLeil);
@@ -260,30 +331,83 @@ public class Leiloeira {
         locker.writeUnlockaAv();
 	locker.writeUnlockHis();
         
-	return true;
-    }
-    
-    public boolean esperarPorHistorico(String usn) throws InterruptedException{
+	return true; /*
         
-        /*                          A RESOLVER PELO RENATO
-        locker.addedNewHistorico.await();
-        locker.readLockHis();
-        locker.readLockUlF();
-        TreeSet<Comprador> tmp;
-        tmp = historico.get(ultFechado).getListaLances();
-        locker.readUnlockHis();
-        locker.readUnlockUlF();
-        for (Comprador c : tmp){
-            if (c.getUsername().equals(usn)){
-                locker.readUnlockUlF();
-                return true;
-            }
-        }
         */
-        return false;
     }
     
-    public double precoLeilao(Integer id){
+    
+    
+    // mudar o lock para o mesmo que fecha os leiloes e arranjar isso
+    public synchronized StringBuilder esperarPorHistorico(String usn) throws InterruptedException{
+        
+        boolean state = true;
+        StringBuilder s = new StringBuilder();
+        s.append("async:");
+        
+        
+        
+   
+       while(state){
+       
+        
+        // obter o lock para aAvisar escrever e ler
+        locker.writeLockAti();
+          
+            
+        if(this.aAvisar.size() > 0){
+        
+          for(int i = 0 ; i<this.aAvisar.size() ; i++)
+            if((this.aAvisar.get(i).vazio())) this.aAvisar.remove(i);
+        }
+        
+        
+        
+        
+         for(InfoLeilaoFinalizado iL : this.aAvisar){
+             s.append(iL.getAviso(usn));
+             if(!s.equals("async;")) return s;
+         }
+         
+         
+         locker.writeUnlockAti();
+         
+       
+         
+         
+         
+         locker.readLockUlF();
+         int temp = this.ultFechado;
+         
+        
+        
+            while(this.ultFechado == temp){
+               locker.readUnlockUlF();
+                wait();
+               locker.readLockUlF();
+            }
+            
+            locker.readUnlockUlF();
+            
+            s.append(this.aAvisar.get(0).getAviso(usn));
+            
+            
+            if(!(s.equals("async:"))) return s; 
+            
+       }    
+     
+        
+        
+        
+        
+       return s; // pode ser a string sem nada. Ver isso  
+        
+     
+       
+    }
+    
+    
+   public double precoLeilao(Integer id){
         double ret = -1;
         locker.readLockAti();
         if (ativos.containsKey(id))
