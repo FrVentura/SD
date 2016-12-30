@@ -66,13 +66,14 @@ public class InfoLeilaoFinalizado {
     public synchronized StringBuilder getAviso(String user)
     {
         StringBuilder res = new StringBuilder(); 
-            
+       
             
            
         // caso a thread que requesita a inf seja a do vendedor
             if(user.equals(this.vendedor)){
                 res.append("Leilao: " + id +"\n");
                 res.append("Vendedor: " + vendedor + "\n");
+                res.append("Vencedor: " + vencedor + "\n");
                 res.append("Valor :" + valor +"\n");
                 this.licitadores.remove(user);
                 
@@ -90,7 +91,7 @@ public class InfoLeilaoFinalizado {
                 this.licitadores.remove(user);
                 return res;
              }
-          
+         
           return res;
     
     

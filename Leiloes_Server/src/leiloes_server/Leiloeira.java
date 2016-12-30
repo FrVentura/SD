@@ -263,6 +263,7 @@ public class Leiloeira {
         return ret;
     }
 	
+    
     public synchronized boolean  fecharLeilao(Integer idLeil, String usn){
         
         // Adquirir locks
@@ -276,6 +277,8 @@ public class Leiloeira {
                 //Remover dos ativos
                 Leilao l = this.ativos.get(idLeil);
                 this.ativos.remove(idLeil);
+                
+                
                 
                 //Colocar no historico
                 this.historico.put(idLeil, l);
@@ -291,7 +294,7 @@ public class Leiloeira {
                 //enviar signall às threads que esperam por histórico
                  // ALTERAR ISTO   
                  notifyAll();   
-                    
+               
                  return true;
                  
                }catch(Exception e){ return false;  
@@ -299,7 +302,7 @@ public class Leiloeira {
                 // Libertar Locks
                 finally{ 
                  locker.writeUnlockUlF();
-            locker.writeUnlockAti();
+            locker.writeUnlockaAv();
           locker.writeUnlockHis();
         locker.writeUnlockAti();  
                 }
@@ -351,7 +354,7 @@ public class Leiloeira {
         
    
        while(state){
-       
+         
         
         // obter o lock para aAvisar escrever e ler
         locker.writeLockAti();
@@ -367,8 +370,14 @@ public class Leiloeira {
         
         
          for(InfoLeilaoFinalizado iL : this.aAvisar){
-             s.append(iL.getAviso(usn));
-             if(!s.equals("async:")) return s;
+             StringBuilder aux = iL.getAviso(usn);
+             if(aux.length() > 2){
+                s.append(aux);
+                
+                
+                 return s;
+             }
+             
          }
          
          
@@ -382,9 +391,10 @@ public class Leiloeira {
          int temp = this.ultFechado;
          
         
-        
+  
             while(this.ultFechado == temp){
                locker.readUnlockUlF();
+                
                 wait();
                locker.readLockUlF();
             }
@@ -394,7 +404,9 @@ public class Leiloeira {
             s.append(this.aAvisar.get(0).getAviso(usn));
             
             
-            if(!(s.equals("async:"))) return s; 
+            if(!(s.equals("async:"))){ 
+                
+                return s;} 
             
        }    
      

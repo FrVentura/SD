@@ -52,12 +52,14 @@ public class HandlerAssynchronous implements Runnable {
            
                while(true){
             
-                
+               s = new StringBuilder();
+              
                s = myLeiloeira.esperarPorHistorico(username);
               
               
                
               // Esta string tem que ser recebida e tratada do lado cliente
+             
               out.println(s);
                 
             }

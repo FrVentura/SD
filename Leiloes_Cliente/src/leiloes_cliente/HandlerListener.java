@@ -36,8 +36,16 @@ public class HandlerListener implements Runnable{
                 locker.setAvailable(false);
                 fromSv = in.readLine();
                 //System.out.println(fromSv);
-                if (fromSv.startsWith("async:"))
+                
+                // ALTERA ISTO
+                if (fromSv.startsWith("async:")){
                     System.out.println(fromSv);
+                   for(int i = 0 ; i<3 ; i++){
+                    fromSv = in.readLine();   
+                    System.out.println(fromSv);
+                                                }
+                }
+                
                 else
                     locker.setReceived(fromSv);
                                 
