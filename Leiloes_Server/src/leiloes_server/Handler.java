@@ -136,8 +136,10 @@ public class Handler implements Runnable {
                             ArrayList<String> listaLeiloes = new ArrayList<>();
                             listaLeiloes = myLeiloeira.ListarLeiloes(usn);
                             out.println("from server: a Listar leiloes");
+                            //System.out.println(usn);
                             for (String s : listaLeiloes){
                                 out.println(s);
+                                //System.out.println(s);
                             }
                             out.println("end");
                             break;
@@ -156,7 +158,7 @@ public class Handler implements Runnable {
                             if((curr = in.readLine()) != null);
                                 idLeilao = Integer.parseInt(curr);
                             if (myLeiloeira.fecharLeilao(idLeilao, usn)){
-                                out.println("idLeilao");
+                                out.println(idLeilao);
                             }
                             break;
                         default:
@@ -175,8 +177,10 @@ public class Handler implements Runnable {
                             ArrayList<String> listaLeiloes = new ArrayList<>();
                             listaLeiloes = myLeiloeira.ListarLeiloes(usn);
                             out.println("from server: a Listar leiloes");
+                            //System.out.println(usn);
                             for (String s : listaLeiloes){
                                 out.println(s);
+                                //System.out.println(s);
                             }
                             out.println("end");
                             break;

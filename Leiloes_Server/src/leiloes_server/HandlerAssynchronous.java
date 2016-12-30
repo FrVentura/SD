@@ -59,8 +59,18 @@ public class HandlerAssynchronous implements Runnable {
               
                
               // Esta string tem que ser recebida e tratada do lado cliente
+              //System.out.println(s);
+
+              
+              String tmp = new String();
+              String[] lines = s.toString().split("\\n");
+              
+              for (String st : lines){
+                  tmp+=st;
+              }
+              
              
-              out.println(s);
+              out.println(tmp);
                 
             }
            }catch(InterruptedException e){

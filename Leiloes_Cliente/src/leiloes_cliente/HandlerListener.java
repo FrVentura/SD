@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -38,26 +39,40 @@ public class HandlerListener implements Runnable{
                 //System.out.println(fromSv);
                 
                 // ALTERA ISTO
-                if (fromSv.startsWith("async:")){
-                    System.out.println(fromSv);
-                   for(int i = 0 ; i<3 ; i++){
-                    fromSv = in.readLine();   
-                    System.out.println(fromSv);
-                                                }
+                while (fromSv.startsWith("async:")){
+                    System.out.println(fromSv.substring(6));
+                    //for(int i = 0 ; i<3 ; i++){
+                    //    fromSv = in.readLine();   
+                    //    System.out.println(fromSv);
+                    //}
+                    fromSv = in.readLine();
                 }
                 
-                else
-                    locker.setReceived(fromSv);
+               
+                //locker.setReceived(fromSv);
                                 
                 
                 if (fromSv.equals("from server: a Listar leiloes")){
+                    System.out.println("passei");
+                    ArrayList<String> tmp = new ArrayList<>();
+                    fromSv = in.readLine();
+                    while(fromSv.equals("end")==false){
+                        tmp.add(fromSv);
+                        fromSv = in.readLine();
+                    }
+                    locker.setArrList(tmp);
+                    
+                    /*
                     locker.getArrList().clear();
                     fromSv = in.readLine();
                     while (fromSv.equals("end")==false){
                         locker.getArrList().add(fromSv);
                         fromSv = in.readLine();
                     }
+                    */
                 }
+                else
+                    locker.setReceived(fromSv);
                 locker.getL().unlock();
                 while (locker.isAvailable()==false);
             }

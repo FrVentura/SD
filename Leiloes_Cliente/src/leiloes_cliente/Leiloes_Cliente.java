@@ -176,7 +176,7 @@ public class Leiloes_Cliente {
         String password;
         boolean reler = false;     
 
-        do{
+        //do{
             clean();
             mainMenu.executa();
             String opcao =  mainMenu.getOpcao();
@@ -269,7 +269,7 @@ public class Leiloes_Cliente {
                         reler = true;
                         break;
             }
-        } while (reler);
+        //} while (reler);
     }
             
     public static void loadMenus(){
