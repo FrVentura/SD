@@ -39,12 +39,11 @@ public class HandlerAssynchronous implements Runnable {
         
         
     }
-                // A RESOLVER PELO RENATO -> AVISAR COMPRADORES QUE LICITARAM (dizer qual o idLeilao)
-                //                          -> AVISAR VENCEDOR DO LEILAO (dizer qual o idLeilao)
+         
     
         public void run(){
             
-            StringBuilder s;
+            StringBuilder s = new StringBuilder();
             
         
             
@@ -52,14 +51,12 @@ public class HandlerAssynchronous implements Runnable {
            
                while(true){
             
-               s = new StringBuilder();
-              
-               s = myLeiloeira.esperarPorHistorico(username);
-              
               
                
-              // Esta string tem que ser recebida e tratada do lado cliente
-              //System.out.println(s);
+              
+               
+               s = myLeiloeira.esperarPorHistorico(username);
+        
 
               
               String tmp = new String();
@@ -73,23 +70,13 @@ public class HandlerAssynchronous implements Runnable {
               out.println(tmp);
                 
             }
-           }catch(InterruptedException e){
+           }catch(InterruptedException e){ 
            
            }
         }
             
             
             
-            /*
-               try {
-                boolean bool=false;
-                while(bool==false){
-                    bool = myLeiloeira.esperarPorHistorico(username);
-                }
-                
-            } catch (InterruptedException ex) {
-                Logger.getLogger(HandlerAssynchronous.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            */
+
 }
 

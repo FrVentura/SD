@@ -21,7 +21,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class Leiloeira {
 
     private Integer incrementador;   
-    private TreeMap<Integer,Leilao> ativos; // 
+    private TreeMap<Integer,Leilao> ativos;  
     private TreeMap<Integer,Leilao> historico; // tem todos os Leilões que já acabaram
     private TreeMap<String,Utilizador> utilizadores; // A string é o usn do utilizador.
     
@@ -31,10 +31,7 @@ public class Leiloeira {
     
     
     
-    // temporárias -> a passar para a class Lock
-    // invoca este lock quem mexe em aAvisar, ultFechado, método fecharLeilao e método esperarPorHistorico
-    private final Lock l;
-    Condition espera;
+   
 
 
 
@@ -49,9 +46,8 @@ public class Leiloeira {
         this.locker = new Locker();
         
         this.aAvisar = new ArrayList();
-        // temporárias
-        l = new ReentrantLock();
-        espera = l.newCondition();
+      
+
         
     }
 
@@ -69,9 +65,8 @@ public class Leiloeira {
         this.ultFechado = leil.getUtFechado();
         
         this.aAvisar = leil.getaAvisar();
-        // temporarias
-        this.l = new ReentrantLock();
-        espera = l.newCondition();
+      
+     
     }
 
 	// Gets
@@ -307,44 +302,14 @@ public class Leiloeira {
         locker.writeUnlockAti();  
                 }
                 
-                
-            
-        
-        /*Leilao l;
-        locker.writeLockUti();
-        if(ativos.containsKey(idLeil)){
-            l = ativos.get(idLeil);
-            if(l.getVendedor().getUsername().equals(usn))
-                ativos.remove(idLeil);
-            else{
-                locker.writeUnlockAti();
-                return false;
-            }
-        }
-        else{
-            locker.writeUnlockAti();
-            return false;
-        }
-        
-        locker.writeLockHis();
-        locker.writeLockaAv();
-        
-        historico.put(idLeil,l);
-        aAvisar.add(new InfoLeilaoFinalizado(idLeil,l));
-        
-
-        locker.writeUnlockaAv();
-	locker.writeUnlockHis();
-        
-	return true; /*
-        
-        */
+                //Tem que retornar no fim certo?
+   
     }
     
     
     
     // mudar o lock para o mesmo que fecha os leiloes e arranjar isso
-    public synchronized StringBuilder esperarPorHistorico(String usn) throws InterruptedException{
+    public StringBuilder esperarPorHistorico(String usn) throws InterruptedException{
         
         boolean state = true;
         StringBuilder s = new StringBuilder();
@@ -352,14 +317,15 @@ public class Leiloeira {
         
         
         
-   
+   // mudar o state para acabar com a thread
        while(state){
          
         
         // obter o lock para aAvisar escrever e ler
-        locker.writeLockAti();
+        locker.writeLockaAv();
           
             
+        // Limpar o Array aAvisar.
         if(this.aAvisar.size() > 0){
         
           for(int i = 0 ; i<this.aAvisar.size() ; i++)
@@ -368,9 +334,10 @@ public class Leiloeira {
         
         
         
-        
+        // ver se há algum aviso pendente.
          for(InfoLeilaoFinalizado iL : this.aAvisar){
              StringBuilder aux = iL.getAviso(usn);
+             // Neste caso quer dizer que ha algum aviso pendente.
              if(aux.length() > 2){
                 s.append(aux);
                 
@@ -381,40 +348,65 @@ public class Leiloeira {
          }
          
          
-         locker.writeUnlockAti();
+        locker.writeUnlockaAv();
+         
+         
          
        
          
          
          
-         locker.readLockUlF();
+        locker.readLockUlF();
          int temp = this.ultFechado;
          
         
   
             while(this.ultFechado == temp){
                locker.readUnlockUlF();
-                
+             synchronized(this){   
                 wait();
+             }  
                locker.readLockUlF();
             }
+            temp = this.ultFechado;
+        locker.readUnlockUlF();
             
-            locker.readUnlockUlF();
             
-            s.append(this.aAvisar.get(0).getAviso(usn));
             
+        locker.readLockaAv();
+            
+            boolean stop = false;
+            int i;
+            
+            for(i = 0 ; (i<this.aAvisar.size() && !stop) ; i++)
+            {
+               if(this.aAvisar.get(i).getID() == temp){ stop = true;} 
+            
+            
+            
+                if(stop)
+                s.append(this.aAvisar.get(i).getAviso(usn));
+           
+            }
+            
+            
+        locker.readUnlockaAv();
             
             if(!(s.equals("async:"))){ 
                 
                 return s;} 
             
-       }    
-     
-        
-        
-        
-        
-       return s; // pode ser a string sem nada. Ver isso  
+            // se não houver nada a apresentar continua o ciclo.
+            
+       } 
+       
+      
+       
+       // nunca vai sair aqui
+       s = new StringBuilder();
+       s.append("end");
+       return s;
+      
         
      
        
