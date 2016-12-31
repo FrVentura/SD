@@ -66,7 +66,7 @@ public class HandlerAssynchronous implements Runnable {
               String[] lines = s.toString().split("\\n");
               
               for (String st : lines){
-                  tmp+=st+" ";
+                  tmp+=st+",";
               }
               
              

@@ -23,6 +23,18 @@ public class HandlerListener implements Runnable{
         locker = l;
         
     }
+    
+    public void trataMensagemAsync(String in){
+        String [] arr;
+        arr = in.split(",");
+        System.out.println("");
+        System.out.println("/\\/\\/\\/\\ LEILAO FINALIZADO /\\/\\/\\/\\");
+        for (String s : arr){
+            System.out.println(s);
+        }
+        System.out.println("/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/");
+        System.out.print("Seleção: ");
+    }
 
 
     @Override
@@ -36,22 +48,13 @@ public class HandlerListener implements Runnable{
                 locker.getL().lock();
                 locker.setAvailable(false);
                 fromSv = in.readLine();
-                //System.out.println(fromSv);
                 
-                // ALTERA ISTO
                 while (fromSv.startsWith("async:")){
-                    System.out.println(fromSv.substring(6));
-                    //for(int i = 0 ; i<3 ; i++){
-                    //    fromSv = in.readLine();   
-                    //    System.out.println(fromSv);
-                    //}
+                    //System.out.println(fromSv.substring(6));
+                    trataMensagemAsync(fromSv.substring(6));
                     fromSv = in.readLine();
                 }
-                
-               
-                //locker.setReceived(fromSv);
-                                
-                
+
                 if (fromSv.equals("from server: a Listar leiloes")){
                     System.out.println("passei");
                     ArrayList<String> tmp = new ArrayList<>();
@@ -61,20 +64,11 @@ public class HandlerListener implements Runnable{
                         fromSv = in.readLine();
                     }
                     locker.setArrList(tmp);
-                    
-                    /*
-                    locker.getArrList().clear();
-                    fromSv = in.readLine();
-                    while (fromSv.equals("end")==false){
-                        locker.getArrList().add(fromSv);
-                        fromSv = in.readLine();
-                    }
-                    */
                 }
-                else
+                else{
                     locker.setReceived(fromSv);
+                }
                 locker.getL().unlock();
-                //while (locker.isAvailable()==false);
                 
                 ///// teste /////
                 try {
