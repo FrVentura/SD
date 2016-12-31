@@ -50,7 +50,6 @@ public class HandlerListener implements Runnable{
                 fromSv = in.readLine();
                 
                 while (fromSv.startsWith("async:")){
-                    //System.out.println(fromSv.substring(6));
                     trataMensagemAsync(fromSv.substring(6));
                     fromSv = in.readLine();
                 }
@@ -70,7 +69,6 @@ public class HandlerListener implements Runnable{
                 }
                 locker.getL().unlock();
                 
-                ///// teste /////
                 try {
                     locker.getL().lock();
                     locker.getOkGo().await();
