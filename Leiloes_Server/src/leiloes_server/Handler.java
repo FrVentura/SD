@@ -62,7 +62,7 @@ public class Handler implements Runnable {
                                 out.println("situation1");
                                 //System.out.println("situation1");
                                 situation = 1;
-                                //(new Thread (new HandlerAssynchronous(mySocket,myLeiloeira,usn))).start();
+                                (new Thread (new HandlerAssynchronous(mySocket,myLeiloeira,usn))).start();
                             }
                             else{
                                 out.println("from server: Fail");

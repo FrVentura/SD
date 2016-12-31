@@ -74,7 +74,16 @@ public class HandlerListener implements Runnable{
                 else
                     locker.setReceived(fromSv);
                 locker.getL().unlock();
-                while (locker.isAvailable()==false);
+                //while (locker.isAvailable()==false);
+                
+                ///// teste /////
+                try {
+                    locker.getL().lock();
+                    locker.getOkGo().await();
+                    
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(HandlerListener.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
                 
                 

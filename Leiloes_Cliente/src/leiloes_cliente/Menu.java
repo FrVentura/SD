@@ -64,11 +64,11 @@ public class Menu {
     private String lerOpcao() throws IOException {
         String op;
        
-        System.out.print("Selecção: ");
+        System.out.print("Seleção: ");
         op = sin.readLine();
        
         if (Integer.parseInt(op)<0 || Integer.parseInt(op)>this.opcoes.size()) {
-            System.out.println("Opção Inválida.");
+            System.out.println("Opção Inválida. Tente novamente.");
             op = "-1";
         }
         return op;
