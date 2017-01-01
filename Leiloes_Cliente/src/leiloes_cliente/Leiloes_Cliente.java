@@ -34,9 +34,7 @@ public class Leiloes_Cliente {
         
 
         loadMenus();
-        //Thread async = new Thread (new HandlerAsyncClient(cs,in,locker));
         Thread listen = new Thread (new HandlerListener(cs,in,locker));
-        //async.start();
         listen.start();
         modo = Modo.VISITOR;
         
@@ -56,7 +54,6 @@ public class Leiloes_Cliente {
         
 
         
-
         in.close();
         sin.close();
         out.close();
@@ -68,10 +65,8 @@ public class Leiloes_Cliente {
     
     public static void menuComprador(Locker l) throws IOException, InterruptedException {
         do {
-            clean();
             compradorMenu.executa();
             String opcao = compradorMenu.getOpcao();
-            //out.println(opcao);
             
             switch(opcao){
                 case "0":   
@@ -81,106 +76,155 @@ public class Leiloes_Cliente {
                     
                 case "1":
                     out.println(opcao);
-                    clean();
                     l.getL().lock();
                     ArrayList<String> tmp = l.getArrListDeep();
                     l.getOkGo().signalAll();
                     l.getL().unlock();
-                    //l.setAvailable(true);
-                    System.out.println("***** Lista de Leilões *****");
+                    System.out.println("\n\n:: Lista de Leilões ::\n");
                     for (String s : tmp)
                         System.out.println(s);
-                    System.out.println("***** FIM *****");
+                    System.out.println("\n:: FIM ::");
                     break;
  
                 case "2":
-                    out.println(opcao);
-                    clean();
-                    System.out.println("ID do Leilão: ");
+                    System.out.println("\n\n:: Licitar ::");
+                    System.out.println("\nID do Leilão:");
+                    
                     String input = sin.readLine();
+                    
+                    if(input.isEmpty()){
+                        System.out.println("\nFormato errado.");
+                        break;
+                    }
+                    try{
+                        int testIntIdLicitar = Integer.parseInt(input);
+                    }
+                    catch(NumberFormatException e){
+                        System.out.println("\nFormato errado.");
+                        break;
+                    }
+                    
+                    out.println(opcao);
+     
                     out.println(input);
+                    
                     l.getL().lock();
-                    System.out.println("Maior licitação até ao momento: "+l.getReceived());
+                    
+                    double maiorLicitacao = Double.parseDouble(l.getReceived());
                     l.getOkGo().signalAll();
                     l.getL().unlock();
-                    //l.setAvailable(true);
-                    System.out.print("Licitação: ");
+                    
+                    if(maiorLicitacao == -1){
+                        System.out.println("\nImpossivel licitar no leilão.");
+                        break;
+                    }
+                    System.out.println("\nMaior licitação até ao momento: "+maiorLicitacao);
+                    
+                    System.out.print("\nColoque a sua licitação: ");
+                    
                     input = sin.readLine();
+                    
                     out.println(input);
                     
                     l.getL().lock();
                     String tmp2 = l.getReceived();
                     l.getOkGo().signalAll();
                     l.getL().unlock();
-                    //l.setAvailable(true);
+                    
                     if (tmp2.equals("sucesso")){
-                        System.out.println("Acabou de licitar com sucesso no leilao.");
+                        System.out.println("\nLicitação efetuada com sucesso.");
                     }
                     else{
-                        System.out.println("Não foi possível licitar.\nLeilão foi finalizado ou existe oferta maior. Repetir listagem.");
+                        System.out.println("\nNão foi possível inserir licitação.");
                     }
                     break;
-
+                
+                default:
+                    break;
             }
         } while (modo != Modo.QUIT);
     }
     
     public static void menuVendedor(Locker l) throws IOException {
         do {
-            clean();
             vendedorMenu.executa();
             String opcao = vendedorMenu.getOpcao();
-            //out.println(opcao);
             
             switch(opcao){
                 case "0":
+                    out.println(opcao);
                     modo = Modo.QUIT;
                     out.println(opcao);
                     break;
                     
                 case "1":
                     out.println(opcao);
-                    clean();
                     l.getL().lock();
                     ArrayList<String> tmp = l.getArrListDeep();
                     l.getOkGo().signalAll();
                     l.getL().unlock();
-                    //l.setAvailable(true);
-                    System.out.println("***** Lista de Leilões *****");
+                    
+                    System.out.println("\n\n:: Lista de Leilões ::\n");
                     for (String s : tmp)
                         System.out.println(s);
-                    System.out.println("***** FIM *****");
+                    System.out.println("\n:: FIM ::");
                     break;
                     
                 case "2":
+                    System.out.println("\n\n:: Novo leilão ::");
+                    System.out.print("\nItem a leiloar: ");
+                    String item = sin.readLine();
+                    if(item.isEmpty()){
+                        System.out.println("\nFormato errado.");
+                        break;
+                    }
+                    System.out.print("\nIntroduza o valor inicial: ");
+                    String strValor = sin.readLine();
+                    try{
+                        double valor = Double.parseDouble(strValor);
+                    }
+                    catch(NumberFormatException | NullPointerException e){
+                        System.out.println("\nFormato errado.");
+                        break;
+                    }
                     out.println(opcao);
-                    String input;
-                    System.out.print("Introduza o item que pretende leiloar: ");
-                    input = sin.readLine();
-                    out.println(input);
+                    out.println(item);
+                    out.println(strValor);
+                    l.getL().lock();
+                    System.out.println("\nLeilao criado com sucesso com ID: "+l.getReceived());
+                    l.getOkGo().signalAll();
+                    l.getL().unlock();
                     
-                    System.out.print("Introduza o valor inicial: ");
-                    input = sin.readLine();
-                    out.println(input);
-                    l.getL().lock();
-                    System.out.println("Leilao criado com sucesso. Id: "+l.getReceived());
-                    l.getOkGo().signalAll();
-                    l.getL().unlock();
-                    //l.setAvailable(true);
-                    break;
-                
+                    break;               
+                   
                 case "3":
+                    System.out.print("\nIntroduza o ID do leilão que pretende terminar: ");
+                    String strIdLeilaoTerminar = sin.readLine();
+                    try{
+                        int testIntIdTerminar = Integer.parseInt(strIdLeilaoTerminar);
+                    }
+                    catch(NumberFormatException e){
+                        System.out.println("\nFormato errado.");
+                        break;
+                    }
+                    
                     out.println(opcao);
-                    String input2;
-                    System.out.print("Introduza o ID do leilão que pretende terminar: ");
-                    input2 = sin.readLine();
-                    out.println(input2);
+                    out.println(strIdLeilaoTerminar);
                     l.getL().lock();
-                    System.out.println("Leilao terminado com sucesso. Id: "+l.getReceived());
+                    String strFechar = l.getReceived();
                     l.getOkGo().signalAll();
                     l.getL().unlock();
-                    //l.setAvailable(true);
+                    if(strFechar.equals("ErroFecharLeilao"))
+                        System.out.println("\nErro ao fechar leilão.");
+                    else{
+                        System.out.println("\nLeilao terminado com sucesso. Id: "+strFechar);
+                    }
+  
                     break;
+                    
+                default:
+                    break;
+                    
             }
         } while (modo != Modo.QUIT);
     }
@@ -188,118 +232,107 @@ public class Leiloes_Cliente {
     public static void menuRegistoLogin(Locker l) throws IOException, InterruptedException{
         String username;
         String password;
-        boolean reler = false;     
 
-        //do{
-            clean();
-            mainMenu.executa();
-            String opcao =  mainMenu.getOpcao();
-            //out.println(opcao);
+        String opcao =  mainMenu.getOpcao();
+
+        switch(opcao){
+            case "0":
+                    out.println(opcao);
+                    modo = Modo.QUIT;
+                    break;
+
+            case "1":
+                    out.println(opcao);
+                    System.out.println("\n\n:: Registo de vendedor ::");
+                    System.out.println("\nUsername:");
+                    username = sin.readLine();
+                    out.println(username);
+
+                    System.out.println("\nPassword:");
+                    password = sin.readLine();
+                    out.println(password);
+                    l.getL().lock();
+                    if (l.getReceived().equals("situation1")){
+                        modo = Modo.VENDEDOR;
+                    }
+                    else
+                        System.out.println("\nDados inválidos.");
+                    l.getOkGo().signalAll();
+                    l.getL().unlock();
+
+                    break;
+                    
+            case "2":
+                    out.println(opcao);
+                    System.out.println("\n\n:: Registo de comprador ::");
+                    System.out.println("\nUsername:");
+                    username = sin.readLine();
+                    out.println(username);
+
+
+                    System.out.println("\nPassword:");
+                    password = sin.readLine();
+                    out.println(password);
+                    l.getL().lock();
+                    if(l.getReceived().equals("situation2"))
+                        modo = Modo.COMPRADOR;
+                    else
+                        System.out.println("\nDados inválidos");
+                    l.getOkGo().signalAll();
+                    l.getL().unlock();
+
+                    break;
+                    
+            case "3":
+                    out.println(opcao);
+                    System.out.println("\n\n:: Login vendedor ::");
+                    System.out.println("\nUsername:");
+                    username = sin.readLine();
+                    out.println(username);
+
+                    System.out.println("\nPassword");
+                    password = sin.readLine();
+                    out.println(password);
+                    l.getL().lock();
+                    if(l.getReceived().equals("situation3"))
+                        modo = Modo.VENDEDOR;
+                    else
+                        System.out.println("\nDados inválidos.");
+                    l.getOkGo().signalAll();
+                    l.getL().unlock();
+                    
+                    break;
+                    
+            case "4":
+                    out.println(opcao);
+                    System.out.println("\n\n:: Login comprador ::");
+                    System.out.println("\nUsername:");
+                    username = sin.readLine();
+                    out.println(username);
+
+                    System.out.println("\nPassword:");
+                    password = sin.readLine();
+                    out.println(password);
+                    l.getL().lock();
+                    if(l.getReceived().equals("situation4"))
+                        modo = Modo.COMPRADOR;
+                    else
+                        System.out.println("\nDados inválidos.");
+                    l.getOkGo().signalAll();
+                    l.getL().unlock();
+                    
+                    break;
             
-            switch(opcao){
-                case "0":
-                        reler = false;
-                        modo = Modo.QUIT;
-                        break;
-                        
-                case "1":
-                        out.println(opcao);
-                        reler = false;
-                        //System.out.println(in.readLine());
-                        System.out.println("Introduza um username");
-                        username = sin.readLine();
-                        out.println(username);
-
-                        System.out.println("Introduza uma password");
-                        password = sin.readLine();
-                        out.println(password);
-                        l.getL().lock();
-                        if (l.getReceived().equals("situation1")){
-                            modo = Modo.VENDEDOR;
-                        }
-                        else
-                            System.out.println("Dados inválidos");
-                        l.getOkGo().signalAll();
-                        l.getL().unlock();
-                        //l.setAvailable(true);
-                        
-                        
-                        
-                        break;
-                case "2":
-                        out.println(opcao);
-                        reler = false;
-                        //System.out.println(in.readLine());
-                        System.out.println("Introduza um username");
-                        username = sin.readLine();
-                        out.println(username);
-
-
-                        System.out.println("Introduza uma password");
-                        password = sin.readLine();
-                        out.println(password);
-                        l.getL().lock();
-                        if(l.getReceived().equals("situation2"))
-                            modo = Modo.COMPRADOR;
-                        else
-                            System.out.println("Dados inválidos");
-                        l.getOkGo().signalAll();
-                        l.getL().unlock();
-                        //l.setAvailable(true);
-                        
-                        break;
-                case "3":
-                        out.println(opcao);
-                        reler = false;
-                        //System.out.println(in.readLine());
-                        System.out.println("Introduza o seu username");
-                        username = sin.readLine();
-                        out.println(username);
-
-                        System.out.println("Introduza a sua password");
-                        password = sin.readLine();
-                        out.println(password);
-                        l.getL().lock();
-                        if(l.getReceived().equals("situation3"))
-                            modo = Modo.VENDEDOR;
-                        else
-                            System.out.println("Dados inválidos");
-                        l.getOkGo().signalAll();
-                        l.getL().unlock();
-                        //l.setAvailable(true);
-                        break;
-                case "4":
-                        out.println(opcao);
-                        reler = false;
-                        //System.out.println(in.readLine());
-                        System.out.println("Introduza o seu username");
-                        username = sin.readLine();
-                        out.println(username);
-
-                        System.out.println("Introduza a sua password");
-                        password = sin.readLine();
-                        out.println(password);
-                        l.getL().lock();
-                        if(l.getReceived().equals("situation4"))
-                            modo = Modo.COMPRADOR;
-                        else
-                            System.out.println("Dados inválidos");
-                        l.getOkGo().signalAll();
-                        l.getL().unlock();
-                        //l.setAvailable(true);
-                        break;
-                default:
-                        reler = true;
-                        break;
-            }
-        //} while (reler);
+            default:
+                break;
+        }
     }
             
     public static void loadMenus(){
-        String[] mainList = {"Prima 1 para se registar como novo vendedor",
-                           "Prima 2 para se registar como novo comprador",
-                           "Login como vendedor",
-                           "Login como comprador"
+        String[] mainList = {"Registar como novo vendedor",
+                             "Registar como novo comprador",
+                             "Login como vendedor",
+                             "Login como comprador"
         };
         
         String[] vendedorList = {"Listar leiloes",
@@ -316,14 +349,6 @@ public class Leiloes_Cliente {
         compradorMenu = new Menu(compradorList,sin);
         
         
-    }
-    
-    public static void clean(){
-        System.out.print('\u000C');
-    }
-    
-    
-        
-        
+    }     
 }
 

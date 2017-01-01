@@ -55,7 +55,6 @@ public class HandlerListener implements Runnable{
                 }
 
                 if (fromSv.equals("from server: a Listar leiloes")){
-                    System.out.println("passei");
                     ArrayList<String> tmp = new ArrayList<>();
                     fromSv = in.readLine();
                     while(fromSv.equals("end")==false){
@@ -64,9 +63,10 @@ public class HandlerListener implements Runnable{
                     }
                     locker.setArrList(tmp);
                 }
-                else{
+                
+                else
                     locker.setReceived(fromSv);
-                }
+                
                 locker.getL().unlock();
                 
                 try {
@@ -81,7 +81,7 @@ public class HandlerListener implements Runnable{
                 
 
            }
-        catch (IOException ex) {
+        catch (IOException | NullPointerException ex) {
             Logger.getLogger(HandlerListener.class.getName()).log(Level.SEVERE, null, ex);
         }
        

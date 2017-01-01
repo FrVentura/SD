@@ -29,15 +29,7 @@ public class Leiloeira {
     private Locker locker;
     private int ultFechado;
     
-    
-    
-   
-
-
-
-	
-
-        // Construtores
+    // Construtores
     public Leiloeira(){
         this.incrementador = 0;
 	this.ativos = new TreeMap<> ();
@@ -46,9 +38,7 @@ public class Leiloeira {
         this.locker = new Locker();
         
         this.aAvisar = new ArrayList();
-      
-
-        
+    
     }
 
     /**
@@ -56,12 +46,12 @@ public class Leiloeira {
      * @param leil
      * Construtor copia : Devolve 'deep copy' de 
      */
-    public Leiloeira(Leiloeira leil){  // deep copy
+    public Leiloeira(Leiloeira leil){
         this.incrementador = leil.getIncrementador();
 	this.utilizadores = leil.getUtilizadoresDeep();
 	this.ativos = leil.getAtivosDeep(); 
         this.historico = leil.getHistoricoDeep();
-        this.locker = new Locker(); // vale a pena fazer deep?
+        this.locker = new Locker();
         this.ultFechado = leil.getUtFechado();
         
         this.aAvisar = leil.getaAvisar();
@@ -268,12 +258,11 @@ public class Leiloeira {
                 locker.writeLockUlF();
                 
                 try{
-                // Processo
-                //Remover dos ativos
+                if (ativos.containsKey(idLeil) == false)
+                    return false;
+                
                 Leilao l = this.ativos.get(idLeil);
                 this.ativos.remove(idLeil);
-                
-                
                 
                 //Colocar no historico
                 this.historico.put(idLeil, l);
@@ -301,26 +290,18 @@ public class Leiloeira {
           locker.writeUnlockHis();
         locker.writeUnlockAti();  
                 }
-                
-                //Tem que retornar no fim certo?
-   
     }
-    
-    
     
     // mudar o lock para o mesmo que fecha os leiloes e arranjar isso
     public StringBuilder esperarPorHistorico(String usn,ObjState st)  throws InterruptedException{
         
-      
         StringBuilder s = new StringBuilder();
         s.append("async:");
-        
-        
+
         
    // mudar o state para acabar com a thread
        while(st.getState()){
-         
-        
+
         // obter o lock para aAvisar escrever e ler
         locker.writeLockaAv();
           
@@ -331,8 +312,6 @@ public class Leiloeira {
           for(int i = 0 ; i<this.aAvisar.size() ; i++)
             if((this.aAvisar.get(i).vazio())) this.aAvisar.remove(i);
         }
-        
-        
         
         // ver se há algum aviso pendente.
          for(InfoLeilaoFinalizado iL : this.aAvisar){
@@ -346,21 +325,12 @@ public class Leiloeira {
              }
              
          }
-         
-         
+
         locker.writeUnlockaAv();
-         
-         
-         
-       
-         
-         
-         
+
         locker.readLockUlF();
          int temp = this.ultFechado;
-         
-        
-  
+
             while(this.ultFechado == temp){
                locker.readUnlockUlF();
              synchronized(this){   
@@ -370,26 +340,21 @@ public class Leiloeira {
             }
             temp = this.ultFechado;
         locker.readUnlockUlF();
-            
-            
-            
+ 
         locker.readLockaAv();
             
             boolean stop = false;
             int i;
             synchronized(st){
             
-                for(i = 0 ; (i<this.aAvisar.size() && !stop && st.getState()) ; i++)
-                {
-               if(this.aAvisar.get(i).getID() == temp){ stop = true;} 
-            
-            
-            
-                if(stop){
+                for(i = 0 ; (i<this.aAvisar.size() && !stop && st.getState()) ; i++){
+                    if(this.aAvisar.get(i).getID() == temp){ stop = true;} 
+
+                    if(stop){
                    
-                s.append(this.aAvisar.get(i).getAviso(usn));}
+                    s.append(this.aAvisar.get(i).getAviso(usn));}
            
-            }
+                }
            }
             
             
@@ -402,15 +367,9 @@ public class Leiloeira {
             // se não houver nada a apresentar continua o ciclo.
             
        } 
-       
-      
-       
       
        return s;
-      
-        
-     
-       
+  
     }
     
     

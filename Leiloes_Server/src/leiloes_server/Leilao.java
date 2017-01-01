@@ -62,7 +62,7 @@ public class Leilao {
     @Override
     public String toString(){
         StringBuilder s = new StringBuilder();
-        s.append("item: ");
+        s.append("Item: ");
         s.append(this.item);
         s.append("\n");
         s.append("Vendedor: ");
@@ -84,7 +84,7 @@ public class Leilao {
         if (vendedor.getUsername().equals(usn)){
             StringBuilder s = new StringBuilder();
             s.append("*\n");
-            s.append("item: ");
+            s.append("Item: ");
             s.append(this.item);
             s.append("\n");
             s.append("Vendedor: ");
@@ -111,7 +111,7 @@ public class Leilao {
             if (compradorMaiorLance.getUsername().equals(usn)){
                 StringBuilder s = new StringBuilder();
                 s.append("+\n");
-                s.append("item: ");
+                s.append("Item: ");
                 s.append(this.item);
                 s.append("\n");
                 s.append("Vendedor: ");

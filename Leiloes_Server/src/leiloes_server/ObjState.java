@@ -11,8 +11,7 @@ package leiloes_server;
  */
 public class ObjState {
     
-    
-    
+
     private boolean state;
     
     
@@ -20,15 +19,10 @@ public class ObjState {
     
     this.state = s;
     
-    
     }
-    
     
     public void csTfalse(){this.state = false;}
     public void csTtrue(){ this.state = true;}
     public boolean getState(){return this.state;}
-    
-    
-    
-    
+  
 }

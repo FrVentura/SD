@@ -48,20 +48,13 @@ public class Locker {
     private int numReaAv;
     private int numWraAv;
     int wantWriteaAv;
-    
-    
-    
+
     private final Lock ulF;
     private final Condition okToReadUlF;
     private final Condition okToWriteUlF;
     private  int numReadUlF;
     private  int numWriteUlF;
     int wantWriteUlF;
-    
-    
- 
-    
-    
     
     public Locker(){
         lInc = new ReentrantLock();

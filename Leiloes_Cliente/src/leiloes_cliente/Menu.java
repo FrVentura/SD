@@ -48,14 +48,14 @@ public class Menu {
      * Apresentar o menu
      */
     private void showMenu() {
-        System.out.println("\n :: Opções:");
+        System.out.println("\n::: Opções :::\n");
         for (int i=0; i<this.opcoes.size(); i++) {
             System.out.print("[");
             System.out.print(i+1);
             System.out.print("] ");
             System.out.println(this.opcoes.get(i));
         }
-        System.out.println("[0] Sair");
+        System.out.println("\n[0] Sair");
     }
    
     /**
@@ -64,13 +64,18 @@ public class Menu {
     private String lerOpcao() throws IOException {
         String op;
        
-        System.out.print("Seleção: ");
+        System.out.print("\nSelecção: ");
         op = sin.readLine();
        
+        try{
         if (Integer.parseInt(op)<0 || Integer.parseInt(op)>this.opcoes.size()) {
-            System.out.println("Opção Inválida. Tente novamente.");
+            System.out.println("\nOpção Inválida.");
             op = "-1";
         }
+        }
+        catch(NumberFormatException | NullPointerException e){
+            op="-1";
+            System.out.println("\nOpção inválida.");}
         return op;
     }
    

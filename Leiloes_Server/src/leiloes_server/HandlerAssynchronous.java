@@ -27,71 +27,50 @@ public class HandlerAssynchronous implements Runnable {
     Leiloeira myLeiloeira;
     String username;
     boolean state;
-     ObjState state2;
-    
-    
-    
+    ObjState state2;
+
     
     public HandlerAssynchronous(Socket cs, Leiloeira lei, String usn) throws IOException{
         mySocket = cs;
         out = new PrintWriter (cs.getOutputStream(), true);
         myLeiloeira = lei;
         username = usn;
-            state = true;
+        state = true;
         state2 = new ObjState(true);
-        
-        
+
+
     }
     
-      public void changeState(){
-        
+    public void changeState(){
+
         state = false;
         synchronized(state2){
         state2.csTfalse();
-        }
-        
-     
+        } 
     }
          
     
-        public void run(){
-            
-            StringBuilder s = new StringBuilder();
-            
-        
-            
-            try{
-           
-               while(state2.getState()){
-            
-              
-               
-              
-               
-           s = myLeiloeira.esperarPorHistorico(username,state2);
-        
-   if(state2.getState()){
-              String tmp = new String();
-              String[] lines = s.toString().split("\\n");
-              
-              for (String st : lines){
-                  tmp+=st+",";
-              }
-              
-             
-              out.println(tmp);
-              }
-                
-            }
-        
-           }catch(InterruptedException e){ 
-           
-           }
-              System.out.println("5.A thread assyncrona vai morrer, que linda!!");
-        }
-            
-            
-            
+    public void run(){
 
+        StringBuilder s = new StringBuilder();
+
+        try{
+
+            while(state2.getState()){
+
+                s = myLeiloeira.esperarPorHistorico(username,state2);
+
+                if(state2.getState()){
+                    String tmp = new String();
+                    String[] lines = s.toString().split("\\n");
+
+                    for (String st : lines){
+                        tmp+=st+",";
+                    }
+                    out.println(tmp);
+                }
+            }
+       }catch(InterruptedException e){}
+    }
 }
 
