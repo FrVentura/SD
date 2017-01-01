@@ -309,16 +309,16 @@ public class Leiloeira {
     
     
     // mudar o lock para o mesmo que fecha os leiloes e arranjar isso
-    public StringBuilder esperarPorHistorico(String usn) throws InterruptedException{
+    public StringBuilder esperarPorHistorico(String usn,ObjState st)  throws InterruptedException{
         
-        boolean state = true;
+      
         StringBuilder s = new StringBuilder();
         s.append("async:");
         
         
         
    // mudar o state para acabar com a thread
-       while(state){
+       while(st.getState()){
          
         
         // obter o lock para aAvisar escrever e ler
@@ -377,17 +377,20 @@ public class Leiloeira {
             
             boolean stop = false;
             int i;
+            synchronized(st){
             
-            for(i = 0 ; (i<this.aAvisar.size() && !stop) ; i++)
-            {
+                for(i = 0 ; (i<this.aAvisar.size() && !stop && st.getState()) ; i++)
+                {
                if(this.aAvisar.get(i).getID() == temp){ stop = true;} 
             
             
             
-                if(stop)
-                s.append(this.aAvisar.get(i).getAviso(usn));
+                if(stop){
+                   
+                s.append(this.aAvisar.get(i).getAviso(usn));}
            
             }
+           }
             
             
         locker.readUnlockaAv();
@@ -402,9 +405,7 @@ public class Leiloeira {
        
       
        
-       // nunca vai sair aqui
-       s = new StringBuilder();
-       s.append("end");
+      
        return s;
       
         

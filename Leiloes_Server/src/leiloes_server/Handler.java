@@ -22,12 +22,18 @@ public class Handler implements Runnable {
     PrintWriter out;
     BufferedReader in;
     Leiloeira myLeiloeira;
+    boolean state;
+    Thread t ;
+    HandlerAssynchronous hand;
 
     public Handler(Socket cs, Leiloeira lei) throws IOException{
         mySocket = cs;
         out = new PrintWriter (cs.getOutputStream(), true);
         in = new BufferedReader(new InputStreamReader(cs.getInputStream()));
         myLeiloeira = lei;
+        state = true;
+        t = null;
+        hand = null;
     }
 
     @Override
@@ -62,7 +68,9 @@ public class Handler implements Runnable {
                                 out.println("situation1");
                                 //System.out.println("situation1");
                                 situation = 1;
-                                (new Thread (new HandlerAssynchronous(mySocket,myLeiloeira,usn))).start();
+                               hand = new HandlerAssynchronous(mySocket,myLeiloeira,usn);
+                            t =  (new Thread (hand));
+                            t.start();
                             }
                             else{
                                 out.println("from server: Fail");
@@ -78,7 +86,9 @@ public class Handler implements Runnable {
                                 //out.println("from server: Success, username is \""+ usn + "\" password is \""+pwd+"\"");
                                 out.println("situation2");
                                 situation = 2;
-                                (new Thread (new HandlerAssynchronous(mySocket,myLeiloeira,usn))).start();
+                               hand = new HandlerAssynchronous(mySocket,myLeiloeira,usn);
+                            t =  (new Thread (hand));
+                            t.start();
                             }
                             else{
                                 out.println("from server: Fail");
@@ -93,7 +103,9 @@ public class Handler implements Runnable {
                                 //out.println("from server: bem-vindo");
                                 out.println("situation3");
                                 situation = 3;
-                                (new Thread (new HandlerAssynchronous(mySocket,myLeiloeira,usn))).start();
+                           hand = new HandlerAssynchronous(mySocket,myLeiloeira,usn);
+                            t =  (new Thread (hand));
+                            t.start();
                             }
                             else{
                                 out.println("from server: Fail");
@@ -108,7 +120,9 @@ public class Handler implements Runnable {
                                 //out.println("from server: bem-vindo");
                                 out.println("situation4");
                                 situation = 4;
-                                (new Thread (new HandlerAssynchronous(mySocket,myLeiloeira,usn))).start();
+                                hand = new HandlerAssynchronous(mySocket,myLeiloeira,usn);
+                            t =  (new Thread (hand));
+                            t.start();
                             }
                             else{
                                 out.println("from server: Fail");
@@ -127,11 +141,14 @@ public class Handler implements Runnable {
             String item;
                     
             if (situation==1 || situation==3){ // caso do Vendedor :: nao sai daqui ate desconectar
-                while (true){
+                while (state){
                     if( (curr = in.readLine()) != null);
                         choice = Integer.parseInt(curr);
 
                     switch (choice){
+                        case 0 :
+                            state = false;
+                            break;
                         case 1:
                             ArrayList<String> listaLeiloes = new ArrayList<>();
                             listaLeiloes = myLeiloeira.ListarLeiloes(usn);
@@ -167,12 +184,15 @@ public class Handler implements Runnable {
                 }
             }
             else if (situation == 2 || situation == 4){ // Caso do comprador :: nao sai daqui ate desconectar
-                while (true){
+                while (state){
                     
                     if( (curr = in.readLine()) != null);
                         choice = Integer.parseInt(curr);
 
                     switch (choice){
+                        case 0:
+                            state = false;
+                            break;
                         case 1:
                             ArrayList<String> listaLeiloes = new ArrayList<>();
                             listaLeiloes = myLeiloeira.ListarLeiloes(usn);
@@ -208,6 +228,16 @@ public class Handler implements Runnable {
         }
 
         catch (IOException e){};
+        
+        hand.changeState();
+        System.out.println("Anda puta de merda");
+    
+    try{
+        this.t.join();
+
+    }catch(InterruptedException e){}
+        
+        
     }
 
 }

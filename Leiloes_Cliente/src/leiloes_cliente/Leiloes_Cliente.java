@@ -76,6 +76,9 @@ public class Leiloes_Cliente {
             switch(opcao){
                 case "0":   
                     modo = Modo.QUIT;
+                    out.println(opcao);
+                    break;
+                    
                 case "1":
                     out.println(opcao);
                     clean();
@@ -132,6 +135,7 @@ public class Leiloes_Cliente {
             switch(opcao){
                 case "0":
                     modo = Modo.QUIT;
+                    out.println(opcao);
                     break;
                     
                 case "1":

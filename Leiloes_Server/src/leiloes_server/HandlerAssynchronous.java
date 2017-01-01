@@ -26,7 +26,8 @@ public class HandlerAssynchronous implements Runnable {
     BufferedReader in ;
     Leiloeira myLeiloeira;
     String username;
-    
+    boolean state;
+     ObjState state2;
     
     
     
@@ -36,8 +37,20 @@ public class HandlerAssynchronous implements Runnable {
         out = new PrintWriter (cs.getOutputStream(), true);
         myLeiloeira = lei;
         username = usn;
+            state = true;
+        state2 = new ObjState(true);
         
         
+    }
+    
+      public void changeState(){
+        
+        state = false;
+        synchronized(state2){
+        state2.csTfalse();
+        }
+        
+     
     }
          
     
@@ -49,16 +62,15 @@ public class HandlerAssynchronous implements Runnable {
             
             try{
            
-               while(true){
+               while(state2.getState()){
             
               
                
               
                
-               s = myLeiloeira.esperarPorHistorico(username);
+           s = myLeiloeira.esperarPorHistorico(username,state2);
         
-
-              
+   if(state2.getState()){
               String tmp = new String();
               String[] lines = s.toString().split("\\n");
               
@@ -68,11 +80,14 @@ public class HandlerAssynchronous implements Runnable {
               
              
               out.println(tmp);
+              }
                 
             }
+        
            }catch(InterruptedException e){ 
            
            }
+              System.out.println("5.A thread assyncrona vai morrer, que linda!!");
         }
             
             
