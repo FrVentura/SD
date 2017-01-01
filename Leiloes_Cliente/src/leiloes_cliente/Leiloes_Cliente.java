@@ -32,7 +32,6 @@ public class Leiloes_Cliente {
         in = new BufferedReader(new InputStreamReader(cs.getInputStream()));
         sin = new BufferedReader(new InputStreamReader(System.in));
         
-
         loadMenus();
         Thread listen = new Thread (new HandlerListener(cs,in,locker));
         listen.start();
@@ -139,8 +138,6 @@ public class Leiloes_Cliente {
                     }
                     break;
                 
-                default:
-                    break;
             }
         } while (modo != Modo.QUIT);
     }
@@ -224,7 +221,7 @@ public class Leiloes_Cliente {
                     
                 default:
                     break;
-                    
+
             }
         } while (modo != Modo.QUIT);
     }
@@ -233,6 +230,7 @@ public class Leiloes_Cliente {
         String username;
         String password;
 
+        mainMenu.executa();
         String opcao =  mainMenu.getOpcao();
 
         switch(opcao){
@@ -322,7 +320,7 @@ public class Leiloes_Cliente {
                     l.getL().unlock();
                     
                     break;
-            
+                
             default:
                 break;
         }
