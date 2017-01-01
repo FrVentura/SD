@@ -151,7 +151,6 @@ public class Leiloes_Cliente {
                 case "0":
                     out.println(opcao);
                     modo = Modo.QUIT;
-                    out.println(opcao);
                     break;
                     
                 case "1":

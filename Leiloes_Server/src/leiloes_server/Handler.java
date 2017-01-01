@@ -121,8 +121,7 @@ public class Handler implements Runnable {
                     in.close();
                     out.close();
                     mySocket.close();
-                    break;
-
+                    return;
                 default:
                     break;
             }
