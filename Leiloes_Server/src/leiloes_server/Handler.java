@@ -92,9 +92,9 @@ public class Handler implements Runnable {
                     if (myLeiloeira.authenticate(usn,pwd,1) == true){
                         out.println("situation3");
                         situation = 3;
-                   hand = new HandlerAssynchronous(mySocket,myLeiloeira,usn);
-                    t =  (new Thread (hand));
-                    t.start();
+                        hand = new HandlerAssynchronous(mySocket,myLeiloeira,usn);
+                        t =  (new Thread (hand));
+                        t.start();
                     }
                     else{
                         out.println("from server: Fail");
@@ -110,13 +110,16 @@ public class Handler implements Runnable {
                         out.println("situation4");
                         situation = 4;
                         hand = new HandlerAssynchronous(mySocket,myLeiloeira,usn);
-                    t =  (new Thread (hand));
-                    t.start();
+                        t =  (new Thread (hand));
+                        t.start();
                     }
                     else{
                         out.println("from server: Fail");
                         situation = -1;
                     }
+                    
+                    break;
+                    
                 case 0:
                     in.close();
                     out.close();
