@@ -5,6 +5,7 @@
  */
 package leiloes_server;
 
+import java.io.Serializable;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -13,7 +14,7 @@ import java.util.concurrent.locks.ReentrantLock;
  *
  * @author FrVentura
  */
-public class Locker {
+public class Locker implements Serializable{
     private final Lock lInc;
     private final Condition okToReadInc;
     private final Condition okToWriteInc;

@@ -5,11 +5,13 @@
  */
 package leiloes_server;
 
+import java.io.Serializable;
+
 /**
  *
  * @author FrVentura
  */
-public abstract class Utilizador implements Comparable {
+public abstract class Utilizador implements Comparable, Serializable {
     
     String username;
     String password;

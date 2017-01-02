@@ -121,7 +121,10 @@ public class Handler implements Runnable {
                     in.close();
                     out.close();
                     mySocket.close();
-                    break;
+                    synchronized(myLeiloeira){
+                        myLeiloeira.guardarLeiloeira();
+                    }
+                    return;
 
                 default:
                     break;
@@ -176,6 +179,9 @@ public class Handler implements Runnable {
                             in.close();
                             out.close();
                             mySocket.close();
+                            synchronized(myLeiloeira){
+                                myLeiloeira.guardarLeiloeira();
+                            }
                             break;
                             
                         default:
@@ -235,6 +241,9 @@ public class Handler implements Runnable {
                             in.close();
                             out.close();
                             mySocket.close();
+                            synchronized(myLeiloeira){
+                                myLeiloeira.guardarLeiloeira();
+                            }
                             break;
                             
                         default:

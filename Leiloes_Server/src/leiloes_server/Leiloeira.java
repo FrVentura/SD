@@ -5,6 +5,12 @@
  */
 package leiloes_server;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -18,7 +24,7 @@ import java.util.concurrent.locks.ReentrantLock;
  *
  * @author Renato
  */
-public class Leiloeira {
+public class Leiloeira implements Serializable{
 
     private Integer incrementador;   
     private TreeMap<Integer,Leilao> ativos;  
@@ -385,5 +391,44 @@ public class Leiloeira {
     
     public boolean allFree(){
         return locker.allFree();
+    }
+    
+    public void  guardarLeiloeira()
+                  throws IOException{
+        try{
+            FileOutputStream fos = new FileOutputStream("leiloeira.dat");
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(this.incrementador);
+            oos.writeObject(this.ativos);
+            oos.writeObject(this.historico);
+            oos.writeObject(this.utilizadores);
+            oos.writeObject(this.aAvisar);
+            oos.writeObject(this.locker);
+            oos.writeObject(this.ultFechado);
+
+            oos.close();
+        }
+        catch(IOException e){}
+    }
+
+    public void loadLeiloeira()
+                throws IOException, ClassNotFoundException{
+      
+        try{
+            FileInputStream fis = new FileInputStream("leiloeira.dat");
+            ObjectInputStream ois = new ObjectInputStream(fis);
+
+            this.incrementador = (Integer) ois.readObject();
+            this.ativos = (TreeMap<Integer,Leilao>) ois.readObject();
+            this.historico = (TreeMap<Integer,Leilao>) ois.readObject();
+            this.utilizadores = (TreeMap<String,Utilizador>) ois.readObject();
+            this.aAvisar = (ArrayList<InfoLeilaoFinalizado>) ois.readObject();
+            this.locker = (Locker) ois.readObject();
+            boolean aux = locker.allFree();
+            this.ultFechado = (int) ois.readObject();
+
+            ois.close();
+        }
+        catch(IOException | ClassNotFoundException e){}
     }
 }

@@ -5,6 +5,7 @@
  */
 package leiloes_server;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +13,7 @@ import java.util.List;
  *
  * @author FrVentura
  */
-public class InfoLeilaoFinalizado {
+public class InfoLeilaoFinalizado implements Serializable {
     
    
     private int id;

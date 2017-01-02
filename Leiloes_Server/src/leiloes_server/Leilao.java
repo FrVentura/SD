@@ -5,6 +5,7 @@
  */
 package leiloes_server;
 
+import java.io.Serializable;
 import java.util.TreeSet;
 
 /**
@@ -12,7 +13,7 @@ import java.util.TreeSet;
  * @author jreis
  */
 
-public class Leilao {
+public class Leilao implements Serializable {
 
     private String item; // Descrição do que está a ser leiloado
     private Vendedor vendedor; // Vendedor que criou o Leilão
