@@ -67,7 +67,8 @@ public class HandlerAssynchronous implements Runnable {
                     for (String st : lines){
                         tmp+=st+",";
                     }
-                    out.println(tmp);
+                    if(tmp.equals("async:,")==false)
+                        out.println(tmp);
                 }
             }
        }catch(InterruptedException e){}
